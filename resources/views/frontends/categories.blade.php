@@ -189,7 +189,14 @@
                 
             })
         })
+             // it is for passing the cart id 
+            const deleteCart = (id)=>{
+            console.log(id);
+        }
 
+
+
+        // to add the cart in the and modals in the 
         const allCartButton = document.querySelector('.allCart');
         const modalBody = document.querySelector('.modal-body');
 
@@ -208,25 +215,45 @@
                         productImage.style.height = "100px";
                         modalBody.appendChild(productImage);
 
-
-                        const deleteButton = document.createElement('button');
-                            deleteButton.textContent = 'Delete';
-                            deleteButton.classList.add('btn', 'btn-danger','delete-btn');
-                            deleteButton.addEventListener('click', () => {
-                            // Handle delete logic here
-                            });
-
-                            modalBody.appendChild(deleteButton);
-
                         const productName = document.createElement('p');
                         productName.classList.add('fs-5');
                         productName.textContent = 'Product Name: ' + item.name;
                         modalBody.appendChild(productName);
-
+                        
                         const productPrice = document.createElement('p');
                         productPrice.classList.add('fs-5');
                         productPrice.textContent = 'Product Price: ' + item.price;
                         modalBody.appendChild(productPrice);
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.classList.add('btn', 'btn-danger','delete-btn');
+                        modalBody.appendChild(deleteButton);
+
+                        deleteButton.addEventListener('click',()=>{
+                          
+                            fetch(`/cart-delete`,{
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}', 
+                            },
+                            // to pass the id of the product that has been clicked 
+                            body: JSON.stringify({ product_id: item.product_id}),
+                            
+                            })
+
+                            //  to get the response form the contoller as json format 
+                            .then(response => response.json())
+                            // to get the data we got from the json 
+                            .then((data)=>{
+                                toastr.warning("data delted succesfully!");
+                            })
+                            // to find if something has gone wrong 
+                            .catch(error => console.log(error))
+
+                        })
+
                     });
                 }
                 })
@@ -235,6 +262,7 @@
                 });
         });
 
+   
     
     </script>
 

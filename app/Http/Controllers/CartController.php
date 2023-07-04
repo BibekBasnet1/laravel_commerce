@@ -71,13 +71,12 @@ class CartController extends Controller
     public function getCartDetails(Request $request)
     {
         $userId = auth()->user()->id;
-        // $request->produ
-        // $cartItems = Cart::where('user_id', $userId)->get();
-        // $cartProducts = Cart::where('user_id',$userId)->get();
+
+        // inner join the carts table if the products_id is equal to the carts product_id and carts userid 
+        // is equal to the user id of the products table 
         $cartProducts = DB::table('carts')
             ->select('products.*','carts.*')
-            ->join('products', 'products.id', '=', 'carts.product_id')->get();
-        
+            ->join('products', 'products.id', '=', 'carts.product_id')->where('carts.user_id',$userId)->get();
         return response()->json(['cartItems' => $cartProducts]);
     }
 
@@ -100,8 +99,17 @@ class CartController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        
+        $id = $request->input('product_id');
+        // to see if the cart exists
+        $cart = Cart::where('product_id',$id)->first();
+        // if there is cart with the id then delete it 
+        if($cart)
+        {
+            $cart->delete();
+        }
+        return response()->json(['cartDetails'=> "deleted successfully"]);
     }
 }

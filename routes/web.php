@@ -36,6 +36,9 @@ Route::post('/carts',[App\Http\Controllers\CartController::class, 'store'])->nam
 // this is used to add the form 
 Route::get('/cart-details', [App\Http\Controllers\CartController::class, 'getCartDetails'])->name('cart.details');
 
+// this is used to delete the cart
+Route::post('/cart-delete', [App\Http\Controllers\CartController::class, 'destroy'])->name('cart.destroy');
+
 
 Route::get('/login', function () 
 {
