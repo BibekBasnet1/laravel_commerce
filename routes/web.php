@@ -23,8 +23,14 @@ use Illuminate\Support\Facades\View;
 // Route::view('/categories/cart','frontends.addCart')->name('frontends.addCart');
 Route::view('/categories', 'frontends.categories')->name('frontends.categories');
 
+// for redirecting towards the certain page
+Route::get('/checkout', [App\Http\Controllers\FrontendController::class, 'checkout'])->name('frontends.checkout');
+
 // This route is used to show a specific category based on ID
 Route::get('/', [App\Http\Controllers\FrontendController::class, 'show'])->name('frontends.show');
+
+// to redirect to the order checkout 
+Route::get('/checkout/order/items/{id}', [App\Http\Controllers\OrderController::class, 'orderCheckout'])->name('frontends.orderCheckout');
 
 
 // This route is used to show a specific category based on ID
@@ -39,6 +45,8 @@ Route::get('/cart-details', [App\Http\Controllers\CartController::class, 'getCar
 // this is used to delete the cart
 Route::post('/cart-delete', [App\Http\Controllers\CartController::class, 'destroy'])->name('cart.destroy');
 
+// this is for the orders section
+Route::post('order/checkout/',[App\Http\Controllers\OrderController::class , 'order'])->name('orders.order');
 
 Route::get('/login', function () 
 {
@@ -120,6 +128,8 @@ Route::post('/user/sliders/store',[App\Http\Controllers\SliderController::class 
 Route::get('/user/sliders/edit/{id}',[App\Http\Controllers\SliderController::class , 'edit'])->name('sliders.edit');
 Route::post('/user/sliders/update/{id}',[App\Http\Controllers\SliderController::class , 'update'])->name('sliders.update');
 Route::post('/user/sliders/destroy/{id}',[App\Http\Controllers\SliderController::class , 'destroy'])->name('sliders.destroy');
+
+
 
 });
 

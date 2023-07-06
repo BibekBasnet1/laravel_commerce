@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('title')
     User Details
 @endsection
@@ -43,7 +42,13 @@
             <td>{{$product->user->name ?? 'N/A'}}</td>
             <td>
                 {{-- asd --}}
-                <img width="40%" src="{{asset('images/'.$product->image)}}" alt="">
+                {{-- <img src="{{asset('images/'.$product->image)}}" style="width: 40%;" alt=""> --}}
+                @if (File::exists(public_path('images/' . $product->image)))
+                    <img style="width:20%;height:20%;" src="{{ asset('images/' . $product->image) }}" alt="">
+                @else
+                    <img style="width:20%;height:20%;" src="{{ asset('images/fashion.jpg') }}" alt="">
+                @endif
+
                 {{-- {{$product->image ?? 'No Image'}} --}}
             </td>
             <td class="d-flex">

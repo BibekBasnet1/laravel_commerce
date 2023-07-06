@@ -150,7 +150,7 @@
             </div>
           </div>  
           
-          <main class="d-flex justify-content-center m-2  p-4 py-4" style="width: 100%;">
+        <main class="d-flex justify-content-center m-2  p-4 py-4" style="width: 100%;">
             @yield('content')
         </main>
         </div>

@@ -47,15 +47,39 @@ class CartController extends Controller
         }
 
         $cart = new Cart();
+        $userId = auth()->user()->id;
+        $productId = $request->product_id;
         // to assign the currently authenticated user id
-        $cart->user_id = auth()->user()->id;
+        $cart->user_id = $userId;
 
         // take the product id of the cart being clicked 
-        $cart->product_id = $request->product_id;
-        $cart->save();
+        $cart->product_id = $productId;
 
+        // Check if the cart item already exists for the user
+        $cartItem = Cart::where('user_id', $userId)
+        ->where('product_id', $productId)
+        ->first();
+
+        if ($cartItem) {
+            // Increment the quantity if the cart item exists
+            $cartItem->quantity += 1;
+            $cartItem->save();
+        } 
+        else 
+        {
+            // Create a new cart item if it doesn't exist
+            
+            $cart->user_id = $userId;
+            $cart->product_id = $productId;
+            $cart->quantity = 1;
+            $cart->save();
+        }
+        
         // Return a response indicating success
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'message' => 'successfully Stored',
+        ]);
         
     }
 
@@ -77,6 +101,7 @@ class CartController extends Controller
         $cartProducts = DB::table('carts')
             ->select('products.*','carts.*')
             ->join('products', 'products.id', '=', 'carts.product_id')->where('carts.user_id',$userId)->get();
+            // dd($cartProducts);
         return response()->json(['cartItems' => $cartProducts]);
     }
 
@@ -101,7 +126,6 @@ class CartController extends Controller
      */
     public function destroy(Request $request)
     {
-        
         $id = $request->input('product_id');
         // to see if the cart exists
         $cart = Cart::where('product_id',$id)->first();
@@ -109,7 +133,16 @@ class CartController extends Controller
         if($cart)
         {
             $cart->delete();
+            return response()->json([
+                'status' => true,
+                'cartDetails'=> "deleted successfully"
+            ]);
+        }else{
+
+        return response()->json([
+            'status' => false,
+            'cartDetails'=> "Failed"
+        ]);
         }
-        return response()->json(['cartDetails'=> "deleted successfully"]);
     }
 }

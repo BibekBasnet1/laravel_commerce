@@ -1,4 +1,4 @@
-@extends('layouts.categoriesApp')
+@extends('layouts.frontend')
 
 @section('style')
     <style>
@@ -21,111 +21,18 @@
 @section('title')
     <>Document
 @endsection
-@section('content')
+@section('home')
 
     <div class="container-fluid p-0 m-0">
-
-        {{-- start of the navbar container --}}
-        <nav class="navbar navbar-expand-lg bg-dark border-bottom border-bottom-dark text-white d-flex justify-content-around" style="min-width: 100%;">
-
-            {{-- this is for the logo  --}}
-            <div class="logo">
-                <p class="fs-3">Ecommerce</p>
-            </div>
-
-            {{-- this is for the nav-bar --}}
-        
-            <div class="links-container d-flex justify-content-center align-items-center">
-                <ul class="navbar-nav d-flex justify-content-center" style="width: auto">
-                    <li class="nav-item m-2 ">
-                        <a href="" class="nav-link active text-white">Home</a>
-                    </li>
-                    
-                    <li class="nav-item m-2">
-                        <a href="" class="nav-link text-white">About</a>
-                    </li>
-                    
-
-                    <li class="nav-item m-2">
-                        <a href="#" class="nav-link text-white">Products</a>
-                    </li>
-
-                    <li class="nav-item m-2">
-                        <a href="#" class="nav-link text-white">Contact</a>
-                    </li>
-                   
-                </ul>
-
-                {{--  --}}
-                <div class="ms-5">
-                 {{-- it is beasically used to get the product id --}}
-                    <a href="#" class="allCart" data-bs-toggle="modal" data-bs-target="#cart_model" data-user-id="{{ auth()->user()->id }}">
-                        <i class="fa-solid fa-cart-shopping cart data-allCart-id"></i>
-                    </a>
-                </div>
-               {{-- end of the logic  --}}
-            </div>
-
-            <div class="btn-container d-flex">
-                
-                {{-- this is for the login and register --}}
-                
-                @if (Route::has('login'))
-                @auth
-                    {{-- <a href="{{ url('/home') }}" class="nav-link ms-1">
-                        <button class="btn btn-primary">Home</button>
-                    </a>                        --}}
-                @else
-                    <a href="{{ route('login') }}" class="nav-link me-1">
-                        <button class="btn btn-primary">Login</button>
-                    </a>
-        
-                    @if (Route::has('register'))
-            
-                    <a href="{{route('register')}}" class="nav-link text-white align-self-end me-1">
-                        <button class="btn border border-1 text-white">Register</button>
-                    </a>
-                    @endif
-                @endauth
-                @endif           
-
-            </div>
-        </nav>
        
         <p class="fs-3 text-center m-3">{{$categories->name}}</p>
 
-         <!-- Modal -->
-         <div class="modal fade" id="cart_model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">My Cart</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                    {{-- for carts products display --}}
-                    
-                    <p class="fs-5">Product Name: </p>
-                    <p class="fs-5">Product Price: </p>
-
-                    {{-- for displaying the products display --}}
-
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
-                </div>
-            </div>
-            </div>
-        </div>
-
         {{-- this part of the code will give the images based on the category--}}
-        @foreach($categories->products as $product)
         {{-- {{dd($product->image)}} --}}
-                <div class="products-container container-fluid ">
-                    <div class="row container-fluid " style="max-width: 100%;">
-                        <div class="col">
+        <div class="products-container container-fluid ">
+            <div class="row container-fluid justify-content-center" style="max-width: 100%;">
+                @foreach($categories->products as $product)
+                        <div class="col d-flex justify-content-center">
                             <div class="card card-1 m-3 p-2" style="width: 18rem; height: 350px;">
                                 <img src="{{asset('images/'.$product->image)}}" style="width:100%; height:100%;" class="card-img-top" alt="...">
                                 <div class="card-body">
@@ -140,10 +47,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-        @endforeach
+                @endforeach
+             </div>
+        </div>
         {{-- end of the logic  --}}
+        
     </div>
 @endsection
 
@@ -153,6 +61,7 @@
         // toastr.error('Product added successfully');
         // which cart font being clicked 
         const carts = document.querySelectorAll('.cart');
+        cartProducts = [];
         carts.forEach(cart=>{
             cart.addEventListener('click',(e)=>{
                 // for preveting the default submission 
@@ -173,6 +82,7 @@
                 .then(response => response.json())
                 
                 .then(data => {
+                    console.log(data);
                     // Handle the response from the server
                     if(data.hasOwnProperty('success') && data.success)
                     {
@@ -184,7 +94,9 @@
                 })
                 
                 .catch(error => {
-                    console.error(error);    
+                    // console.log('asdf');
+                    // console.error(error);  s  
+                    toastr.error('Something Went Wrong!');
                 });
                 
             })
@@ -209,26 +121,52 @@
 
                     data.cartItems.forEach(item => {
 
+                        // Creating the first div container
+                        const divElement = document.createElement('div');
+
+                        // Adding the class row
+                        divElement.classList.add('row');
+
+
+                        // Adding the class col and creating a new element for the image column
+
+                        const imageColumn = document.createElement('div');
+                        imageColumn.classList.add('col');
+
                         const productImage = document.createElement('img');
                         productImage.src = '{{ asset("images")}}' + "/" + item.image;
                         productImage.style.width = "200px";
                         productImage.style.height = "100px";
-                        modalBody.appendChild(productImage);
+                        imageColumn.appendChild(productImage);
 
+                        // Creating a new element for the product column
+                        const productColumn = document.createElement('div');
+                        productColumn.classList.add('col');
                         const productName = document.createElement('p');
+
                         productName.classList.add('fs-5');
                         productName.textContent = 'Product Name: ' + item.name;
-                        modalBody.appendChild(productName);
-                        
                         const productPrice = document.createElement('p');
                         productPrice.classList.add('fs-5');
                         productPrice.textContent = 'Product Price: ' + item.price;
-                        modalBody.appendChild(productPrice);
+                        productColumn.appendChild(productName);
+                        productColumn.appendChild(productPrice);
 
+                        // Creating the delete button
+                        const deletDiv = document.createElement('div');
+                        deletDiv.classList.add('row');
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = 'Delete';
-                        deleteButton.classList.add('btn', 'btn-danger','delete-btn');
-                        modalBody.appendChild(deleteButton);
+                        deleteButton.classList.add('btn', 'btn-danger', 'delete-btn','m-2');
+                        deleteButton.style.width = "200px";
+                        deletDiv.appendChild(deleteButton);
+                        // Appending the elements
+
+                        // deletDiv.appendChild(deleteButton);
+                        divElement.appendChild(imageColumn);
+                        divElement.appendChild(productColumn);
+                        divElement.appendChild(deleteButton);
+                        modalBody.appendChild(divElement);
 
                         deleteButton.addEventListener('click',()=>{
                           
@@ -240,14 +178,17 @@
                             },
                             // to pass the id of the product that has been clicked 
                             body: JSON.stringify({ product_id: item.product_id}),
-                            
-                            })
+                        })
 
                             //  to get the response form the contoller as json format 
                             .then(response => response.json())
+                        
                             // to get the data we got from the json 
                             .then((data)=>{
                                 toastr.warning("data delted succesfully!");
+                                // removes the div element when being delete button clicked
+                                divElement.remove();
+
                             })
                             // to find if something has gone wrong 
                             .catch(error => console.log(error))
