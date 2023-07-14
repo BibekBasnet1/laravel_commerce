@@ -15,7 +15,8 @@ class CategoryController extends Controller
     public function index()
     {
         // to get all the data from the database 
-        $categories = Category::with("sliders")->get();
+        $categories = Category::with("sliders","subcategory",'products')->get();
+        // dd($categories->toArray());
         return view('categories.index',compact('categories'));
     }
 
@@ -24,7 +25,10 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('categories.create');
+        // to getting the categories based on the name 
+        $categories = Category::orderby('name', 'asc')->get();
+        // dd($categories->toArray());
+        return view('categories.create',compact('categories'));
     }
 
     /**
@@ -35,6 +39,7 @@ class CategoryController extends Controller
         // to validate the request first 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
+            'parent_id' => 'required|numeric',
            
         ]);
  
@@ -46,6 +51,7 @@ class CategoryController extends Controller
 
         $categories = new Category();
         $categories->name = $request->name;
+        $categories->parent_id = $request->parent_id;
         $categories->save();
 
         return redirect()->route('categories.index')->with('success',"Created categories succcesfully");
@@ -81,7 +87,7 @@ class CategoryController extends Controller
         // to validate the request first 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-           
+            'parent_id' => 'required|numeric',
         ]);
  
         // if validation fails it returns with certain errors
@@ -93,6 +99,7 @@ class CategoryController extends Controller
         // search for the data we are trying to update
         $categoryId = Category::findOrFail($id);
         $categoryId->name = $request['name'];
+        $categoryId->parent_id = $request->parent_id;
         $categoryId->save();
 
         // this will redirect to the index page as soon as it

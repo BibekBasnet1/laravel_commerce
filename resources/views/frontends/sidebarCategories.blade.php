@@ -50,26 +50,26 @@
         {{-- {{dd($product->image)}} --}}
         <div class="products-container container-fluid ">
             <div class="row container-fluid justify-content-center" style="max-width: 100%;">
-                @foreach($categories as $detail)
-                @foreach ($detail->products as $product)
-                    
+                @foreach($sidebarCategories as $sidebar)
                         <div class="col d-flex justify-content-center">
                             <div class="card card-1 m-3 p-2" style="width: 18rem; height: 350px;">
                                 {{-- <img src="{{asset('images/'.$product->image)}}" style="width:100%; height:100%;" class="card-img-top" alt="..."> --}}
-                                @if (File::exists(public_path($product->image)))
-                                <img style="width:100%; height:50%;" src="{{ asset($product->image) }}" class="card-img-top" alt="">
+                                @if (File::exists(public_path($sidebar->image)))
+                                <img style="width:100%; height:50%;" src="{{ asset($sidebar->image) }}" class="card-img-top" alt="">
                             @else
-                                <img style="width:100%; height:50%;" src="{{ asset('images/' .$product->image) }}" alt="">
+                                <img style="width:100%; height:50%;" src="{{ asset('images/' .$sidebar->image) }}" alt="">
                             @endif
-        
+                                {{-- @foreach ($sidebar as $products) --}}
+                                    
                                 <div class="card-body">
-                                    <p class="m-0" style="color: #fc6000;font-size:1rem;">{{$product->name}}</p>
-                                    <p class="mt-0">{{$product->category->name}}</p>
-                                    <p class="fs-5" style="color: #fc6000;">Price : {{$product->price}}</p>
+                                    <p class="m-0" style="color: #fc6000;font-size:1rem;"></p>
+                                    <p class="mt-0">{{$sidebar->name}}</p>
+                                    <p class="fs-5" style="color: #fc6000;">Price : {{$sidebar->price}}</p>
                                     
                                 </div>
+                                {{-- @endforeach --}}
                                 <div class="card-footer border-0 " style="height: 10%;background: none;">
-                                    <a href="#" class="cart d-flex justify-content-end" data-product-id="{{$product->id}}">
+                                    <a href="#" class="cart d-flex justify-content-end" data-product-id="{{$sidebar->id}}">
                                         {{-- <i class="fas fa-cart-plus"></i> --}}
                                         <i class="fa-solid fa-cart-shopping cart data-cart-id "></i>
                                     </a>
@@ -77,8 +77,6 @@
                               
                             </div>
                         </div>
-                        @endforeach
-
                 @endforeach
              </div>
         </div>

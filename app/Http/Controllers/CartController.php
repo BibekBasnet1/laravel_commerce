@@ -46,34 +46,20 @@ class CartController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        $cart = new Cart();
+        // $cart = new Cart();
         $userId = auth()->user()->id;
         $productId = $request->product_id;
-        // to assign the currently authenticated user id
-        $cart->user_id = $userId;
 
-        // take the product id of the cart being clicked 
-        $cart->product_id = $productId;
-
-        // Check if the cart item already exists for the user
-        $cartItem = Cart::where('user_id', $userId)
-        ->where('product_id', $productId)
-        ->first();
-
-        if ($cartItem) {
-            // Increment the quantity if the cart item exists
-            $cartItem->quantity += 1;
-            $cartItem->save();
-        } 
-        else 
-        {
-            // Create a new cart item if it doesn't exist
-            
-            $cart->user_id = $userId;
-            $cart->product_id = $productId;
-            $cart->quantity = 1;
-            $cart->save();
-        }
+        // update the product_id and the user_id by the name if it exists otherwise create a new row for it 
+        $cart = Cart::updateOrCreate(
+            [
+                'product_id' => $productId,
+                'user_id' => $userId
+            ],
+            [
+                'quantity' => DB::raw('quantity + ' . 1),
+            ]
+        );
         
         // Return a response indicating success
         return response()->json([
@@ -81,6 +67,48 @@ class CartController extends Controller
             'message' => 'successfully Stored',
         ]);
         
+    }
+
+    // for storing the number of products at once when user adds to the cart
+
+    public function addToCart(Request $request)
+    {
+       
+        //  to store the the data in the database when being clicked
+        
+        // to validate the request first 
+        $validator = Validator::make($request->all(), [
+            // 'user_id' => 'numeric',
+            'product_id'=> 'numeric|required',
+            'product_quantity'=> 'numeric|required',
+        ]);
+ 
+        // if validation fails it returns with certain errors
+        if ($validator->fails()) {
+            // dd($validator->getMessageBag());
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $userId = auth()->user()->id;
+        $productId = $request->product_id;
+        $product_quantity = $request->product_quantity;
+    
+        $carts = $cart = Cart::updateOrCreate(
+            [
+                'product_id' => $productId,
+                'user_id' => $userId
+            ],
+            [
+                'quantity' => DB::raw('quantity + ' . $product_quantity),
+            ]
+        );
+         
+        // Return a response indicating success
+        return response()->json([
+            'success' => true,
+            'message' => 'successfully Stored',
+        ]);
+
     }
 
     /**

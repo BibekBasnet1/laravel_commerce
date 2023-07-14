@@ -34,7 +34,7 @@
         @php
             ++$count;
         @endphp
-        <tr>
+        <tr >
             <td>{{$count}}</td>
             <td>{{$product->name}}</td>
             <td>{{$product->price}}</td>
@@ -43,10 +43,10 @@
             <td>
                 {{-- asd --}}
                 {{-- <img src="{{asset('images/'.$product->image)}}" style="width: 40%;" alt=""> --}}
-                @if (File::exists(public_path('images/' . $product->image)))
-                    <img style="width:20%;height:20%;" src="{{ asset('images/' . $product->image) }}" alt="">
+                @if (File::exists(public_path($product->image)))
+                    <img style="width:20%;height:20%;" src="{{ asset($product->image) }}" alt="">
                 @else
-                    <img style="width:20%;height:20%;" src="{{ asset('images/fashion.jpg') }}" alt="">
+                    <img style="width:20%;height:20%;" src="{{ asset('images/' .$product->image) }}" alt="">
                 @endif
 
                 {{-- {{$product->image ?? 'No Image'}} --}}

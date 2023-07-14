@@ -8,9 +8,10 @@
 
 <div class="container d-flex justify-content-center align-items-center vh-100">
     <div class="row border border-1 p-2">
+        <p class="fs-3 text-center">Checkout</p>
         <div class="col">
             <!-- Card -->
-            <div class="card">
+            <div>
                 @php
                     $totalAmount = 0;
                     $itemPrice = array();
@@ -18,14 +19,17 @@
                 @endphp
             
                 @foreach ($products as $product)
-                    <div class="card-body">
-                        <h5 class="card-title">Name: {{$product->name}}</h5>
-                        <p class="card-text">Price: {{$product->price}}</p>
+                {{-- {{dd($products)}} --}}
+                    <div class="card-body border">
+                        <h5 class="card-title p-2 m-2">Product:  <span style="color: #fc6000;">{{$product->name}}</h5>
+                        <p class="card-quantity p-2 m-2 fs-5">Quantity * <span style="color: #fc6000;">{{$product->quantity}}</span></p>
+                        <p class="card-text p-2 m-2" >Price:  <span style="color: #fc6000;">{{($product->price)}} </p>
                         @php
-                            array_push($itemPrice, $product->price);
+                            array_push($itemPrice, $product->price * $product->quantity);
                             $orderDetails[] = array(
                                 'name' => $product->name,
-                                'price' => $product->price
+                                'price' => $product->price * $product->quantity,
+                                
                             );
                         @endphp
                     </div>
@@ -38,40 +42,42 @@
                 @endforeach
             
                 <div class="card-footer">
-                    <p class="card-text text-success fs-5">
+                    <p class="card-text text-success fs-5 text-end mt-2">
+                    
                         Total Amount: {{$totalAmount}}
                     </p>
                 </div>
         </div>
-        <div class="row mt-4 p-4 ">
-            <div class="form-check col">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                <label class="form-check-label" for="flexRadioDefault1">
-                  Cash
-            
-                </label>
-              </div>
-              
-            <div class="form-check col">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                <label class="form-check-label" for="flexRadioDefault2">
+    </div>
+
+    <div class="row mt-4 p-4 ">
+        <div class="form-check col">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+            <label class="form-check-label" for="flexRadioDefault1">
+                Cash
+                
+            </label>
+        </div>
+        <div class="form-check col">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+            <label class="form-check-label" for="flexRadioDefault2">
+                    
                   Esewa
                 </label>
             </div>     
         </div>
-        <div class=" row ">
-            <form action="{{ route('orders.order') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-primary mt-4 btn-submit w-100" name="submit" >Submit</button>
-            </form>
+        <div class="row">
+            <a href="" class="btn btn-primary mt-4 btn-submit w-100">
+                Submit
+            </a>
         </div>
     </div>
 </div>
-<div class="row m-4">
+{{-- <div class="row m-4">
     @foreach ($orders as $order)
     @endforeach
     
-</div>
+</div> --}}
 
 @endsection 
 
@@ -90,16 +96,18 @@
             const cardElements = document.querySelectorAll('.card-body');
             cardElements.forEach(card => {
                 // taking out the price of the card and pushing it into the object 
-                const name = card.querySelector('.card-title').textContent.replace('Name: ', '');
+                const name = card.querySelector('.card-title').textContent.replace('Product: ', '');
                 const price = card.querySelector('.card-text').textContent.replace('Price: ', '');
-                orderDetails.push({ name, price });
+                const quantity = card.querySelector('.card-quantity').textContent.replace('Quantity *', '');
+                // const price = parseFloat(priceAmount * quantity);
+                orderDetails.push({ name, price ,quantity});
             });
 
             // Calculate the total amount for the each product
             
             let totalAmount = 0;
             orderDetails.forEach(item => {
-                totalAmount += parseFloat(item.price);
+                totalAmount += parseFloat(item.price * item.quantity);
             });
 
             // for the validation if the order has not been placed at all

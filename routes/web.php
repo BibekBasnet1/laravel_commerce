@@ -23,6 +23,12 @@ use Illuminate\Support\Facades\View;
 // Route::view('/categories/cart','frontends.addCart')->name('frontends.addCart');
 Route::view('/categories', 'frontends.categories')->name('frontends.categories');
 
+Route::view('/sidebarCategories','frontends.sidebarCategories')->name("frontends.sidebarCategories");
+
+// for redirecting towards the certain page
+Route::get('/sidebarCategories/{id}', [App\Http\Controllers\FrontendController::class, 'sidebarCategory'])->name('frontends.sidebarCategories');
+
+
 // for redirecting towards the certain page
 Route::get('/checkout', [App\Http\Controllers\FrontendController::class, 'checkout'])->name('frontends.checkout');
 
@@ -32,21 +38,38 @@ Route::get('/', [App\Http\Controllers\FrontendController::class, 'show'])->name(
 // to redirect to the order checkout 
 Route::get('/checkout/order/items/{id}', [App\Http\Controllers\OrderController::class, 'orderCheckout'])->name('frontends.orderCheckout');
 
-
 // This route is used to show a specific category based on ID
 Route::get('/categories/{id}', [App\Http\Controllers\FrontendController::class, 'showCategory'])->name('frontends.categories');
 
 // this route is adding the cart section 
 Route::post('/carts',[App\Http\Controllers\CartController::class, 'store'])->name('frontends.store');
 
+// this route is adding the cart section 
+Route::post('/carts-store',[App\Http\Controllers\CartController::class, 'addToCart'])->name('frontends.addToCart');
+
+
 // this is used to add the form 
 Route::get('/cart-details', [App\Http\Controllers\CartController::class, 'getCartDetails'])->name('cart.details');
+
+// this is used to get the details of the product being clicked 
+Route::get('/product-details/{id}', [App\Http\Controllers\FrontendController::class, 'imageCheckout'])->name('frontends.imageCheckout');
 
 // this is used to delete the cart
 Route::post('/cart-delete', [App\Http\Controllers\CartController::class, 'destroy'])->name('cart.destroy');
 
 // this is for the orders section
 Route::post('order/checkout/',[App\Http\Controllers\OrderController::class , 'order'])->name('orders.order');
+
+// for searching the orders section 
+Route::post('search/',[App\Http\Controllers\FrontendController::class , 'search'])->name('frontends.search');
+
+// for searching the page and redirecting to the new page
+Route::get('searchInput/', [App\Http\Controllers\FrontendController::class, 'searchInput'])->name('frontends.searchInput');
+
+// Route::get('displayProducts/', [App\Http\Controllers\FrontendController::class, 'displayProducts'])->name('frontends.displayProducts');
+
+// for searching the page and redirecting to the new page
+Route::post('searchInput/sortByprice/', [App\Http\Controllers\FrontendController::class, 'sortByPrice'])->name('frontends.sortByPrice');
 
 Route::get('/login', function () 
 {
@@ -58,7 +81,7 @@ Auth::routes();
 // grouping for the admin preifx
 Route::group(['prefix' => 'admin','middleware' => 'auth'],function(){
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('frontends.show');
 
 // giving the route for the users where we pass the functioname in the controller part 
 Route::get('/user', [App\Http\Controllers\UserController::class, 'getUser'])->name('users.index')->middleware('auth');
@@ -128,7 +151,6 @@ Route::post('/user/sliders/store',[App\Http\Controllers\SliderController::class 
 Route::get('/user/sliders/edit/{id}',[App\Http\Controllers\SliderController::class , 'edit'])->name('sliders.edit');
 Route::post('/user/sliders/update/{id}',[App\Http\Controllers\SliderController::class , 'update'])->name('sliders.update');
 Route::post('/user/sliders/destroy/{id}',[App\Http\Controllers\SliderController::class , 'destroy'])->name('sliders.destroy');
-
 
 
 });

@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 class OrderController extends Controller
 {
     /**
@@ -49,17 +50,16 @@ class OrderController extends Controller
         });
         
         // returning the order in the json format
-        
-        return response()->json(
-        [ 
-            'orderId'=> $orderId,
+        return response()->json([
             'success' => true,
+            // pass in the recently saved orderId
+            'orderId' => $orderId,
+            'message' => 'stored successfully',
         ]);
-
     }
 
 
-    public function  orderCheckout($id)
+    public function  orderCheckout(Request $request,$id)
     {
 
         // inner join the orders table with the users table if the user-id matches 

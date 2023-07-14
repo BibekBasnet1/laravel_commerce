@@ -12,11 +12,11 @@
 
 @section("home")
     {{-- this is the main container  --}}
-    <main class="d-flex justify-content-center row">
+    <main class="d-flex justify-content-center row main-row">
 
         {{-- This is used for paragraph container  --}}
         <div class="para col">
-            <p class="fs-3">Confirmed Order</p>
+            <p class="fs-3 text-center">Confirmed Order</p>
         </div>
         <div class="information-container">    
             <table class="table">
@@ -25,6 +25,7 @@
                         <th scope="col">S.N</th>
                         <th scope="col">Products</th>
                         <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
                     </tr>
                 </thead>
                 @php
@@ -50,8 +51,9 @@
                            @endphp 
                             <tr scope='row'>
                                 <td>{{$i}}</td>        
-                                    <td>{{ $order->name }}</td>
+                                    <td>{{$order->name }}</td>
                                     <td>{{$order->price}}</td>
+                                    <td>{{$order->quantity}}</td>
                             </tr>
                                                                             
                            @endforeach
@@ -60,8 +62,8 @@
                         
                         
                         <tr class="col">
-                            <td colspan="3">
-                                <p class="fs-5 text-end me-5 text-success">
+                            <td colspan="4">
+                                <p class="fs-5 text-end m-3 text-success">
                                     Total : {{$userOrder->total}}
                                 </p>
                             </td>
@@ -69,15 +71,22 @@
               
                 </tbody>
             </table>
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" id="element-to-print" onclick="generatePDF()">
                 Download Receipt
             </button>
         </div>
     </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 @endsection
 
 @section('script')
     <script>
-
+        function generatePDF()
+        {
+            const tableToPrint = document.querySelector(".main-row");
+            html2pdf()
+            .from(tableToPrint)
+            .save("receipt.pdf");
+        }
     </script>
 @endsection

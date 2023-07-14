@@ -11,6 +11,7 @@
         <thead>
             <th>Id</th>
             <th>Name</th>
+            <th>Parent Name</th>
             <th>Action</th>
         </thead>
         {{-- it is used to add  a new role --}}
@@ -25,6 +26,9 @@
                 <tr class="">
                     <td>{{ ++$count }}</td>
                     <td>{{$category->name}}</td>
+                    
+                    {{-- if the category with name exists then take it out otherwise dont  --}}
+                    <td>{{$category->parent ? $category->parent->name : ''}}</td>
                         {{-- when being clicked id is passed on which student we are giving authorization to   --}}
                         <td class="d-flex">
                             <a href="{{route('categories.edit',['id'=>$category->id])}}" class="btn btn-info ">Edit</a>

@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('carts', function (Blueprint $table) {
-            $table->unsignedBigInteger('quantity')->after('product_id');
+        Schema::table('categories',function (Blueprint $table)
+        {
+            
+            // to add the new column 
+            $table->unsignedBigInteger('parent_id')->nullable()->change();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Schema::table('cart', function (Blueprint $table) {
-        //     //
-        // });
+        //
     }
 };

@@ -35,6 +35,7 @@ class Product extends Model
         return $this->belongsToMany(Cart::class);
     }
 
+    // logic for deleting the image 
     protected static function boot()
     {
         parent::boot();

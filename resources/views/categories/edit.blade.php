@@ -12,8 +12,16 @@
         <div class="form-group container">
             <label for="" class="form-label mt-2 mb-2 fs-6">Categories Name</label>
             <input placeholder="permission name" class="form-control mb-2" name="name" type="text" value="{{$categories->name}}">
-            <button type="submit" class="btn btn-success mt-2">
-                Submit
+            
+            <label for="" class="form-label mt-2 mb-2 fs-6">Sub Category</label>
+            <select type="text" name="parent_id" class="form-control">
+                <option value="">None</option>
+                    @foreach($categories->subcategory as $category)                                                 
+                            <option value="{{$category->id}}">{{$category->name}}</option>                        
+                    @endforeach
+                </select>
+            <button class="btn btn-primary mt-4 w-100">
+                submit
             </button>
         </div>
     </form>
