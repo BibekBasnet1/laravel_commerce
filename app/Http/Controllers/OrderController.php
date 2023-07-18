@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderShipped;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\Stock;
+use App\View\Components\OrderConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -23,32 +28,80 @@ class OrderController extends Controller
         $userId = auth()->user()->id;
 
         // to take out all the cart details for the users  
-        $carts = Cart::where('user_id',$userId)->get();
+        $carts = Cart::where('user_id', $userId)->get();
 
         // Create a new order instance
         $order = new Order();
         // Assign the current user's ID
         $order->user_id = $userId;
-        
+
         // Set the order details and total amount from the request
 
         // since the order_details will come in json format we are encoding it 
         $order->order_details = json_encode($request->order_details);
 
+        foreach ($request->order_details as $item) {
+            $productName = $item['name'];
+            $quantity = $item['quantity'];
+
+
+            // if the stock name matches with the product name in the orders table with stocks
+            $product = Product::with('stocks')->where('name', $productName)->first();
+            if ($quantity > $product->stocks->quantity) {
+                // returning the order in the json format
+                return response()->json([
+                    'success' => false,
+                    'message' => $productName ." out of stock " ,
+                ]);
+            }
+        }
+
         // taking the total value that has come from the request
         $order->total = $request->total;
-        
+
+        // $stock = Product::with('stocks')->where('name','Camera')->first();
+
+
         // Save the order to the database
         $order->save();
 
+        // Access the order object of the recently saved order
+        $recentlySavedOrder = $order;
+
         // to find the last saved id 
-        $orderId = $order->id; 
+        $orderId = $order->id;
+
+        // Access the order details property
+        $orderDetails = json_decode($recentlySavedOrder->order_details, true);
+        // dd($orderDetails);        
+        // join the table if the product_id is equal to the product id 
+
+
+        foreach ($orderDetails as $item) {
+            $productName = $item['name'];
+            $quantity = $item['quantity'];
+
+
+            // if the stock name matches with the product name in the orders table with stocks
+            $product = Product::with('stocks')->where('name', $productName)->first();
+            if ($quantity < $product->stocks->quantity) {
+            }
+
+            if ($product) {
+                // foreach ($product->stocks as $stock) {
+                // Subtract the quantity from the stock record
+                $product->stocks->quantity -= $quantity;
+                $product->stocks->save();
+                // }
+            }
+        }
+
 
         // Delete all retrieved data
         $carts->each(function ($item) {
             $item->delete();
         });
-        
+
         // returning the order in the json format
         return response()->json([
             'success' => true,
@@ -59,19 +112,22 @@ class OrderController extends Controller
     }
 
 
-    public function  orderCheckout(Request $request,$id)
+    public function  orderCheckout(Request $request, $id)
     {
 
         // inner join the orders table with the users table if the user-id matches 
         // in the users table with orders
         $userOrder = DB::table('orders')
             ->join('users', 'orders.user_id', '=', 'users.id')
-            ->select('users.name','orders.order_details','orders.total','orders.id')
-            ->where("orders.id",$id)
+            ->select('users.name', 'orders.order_details', 'orders.total', 'orders.id')
+            ->where("orders.id", $id)
             ->first();
 
+        // for sending the email to the user on order confirm 
+        $email = Mail::to('testreceiver@gmail.com')->send(new OrderShipped($userOrder));
+
         // this will return the view for the order checkout and $userorders details
-        return view('frontends.orderCheckout',compact('userOrder'));
+        return view('frontends.orderCheckout', compact('userOrder'));
     }
 
     /**

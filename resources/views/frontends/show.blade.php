@@ -205,27 +205,39 @@
                                         alt="">
                                 @endif
 
-                                <div class="card-body bg-white" style="height: 50%;">
+                                <div class="card-body bg-white w-100" style="height: 50%;">
                                     <p class="m-0" style="color: #fc6000;font-size:1rem;">{{ $product->name }}</p>
                                     <p class="m-0 text-black">{{ $product->category->name }}</p>
                                     <p class="fs-5" style="color: #fc6000;">Price : {{ $product->price }}</p>
-                                    <a href="" class="carts d-flex justify-content-end"
-                                        data-product-id="{{ $product->id }}">
-                                        {{-- <i class="fas fa-cart-plus"></i> --}}
-                                        <i class="fa-solid fa-cart-shopping data-cart-id "></i>
-                                    </a>
+
+                                    {{-- this container holds the icons of the cart whislist and the cart --}}
+
+                                    <div class="icon-container w-100 d-flex justify-content-end">
+                                        {{-- this is for directly adding to the cart  --}}
+                                        <a href="" class="carts" data-product-id="{{ $product->id }}">
+                                            {{-- <i class="fas fa-cart-plus"></i> --}}
+                                            <i class="fa-solid fa-cart-shopping data-cart-id "></i>
+                                        </a>
+
+                                        {{-- this is for the wishlist --}}
+                                        <a href="" class="wishlist" data-product-id="{{ $product->id }}">
+                                            <i class="fa-solid fa-heart text-primary mx-3 "></i>
+                                        </a>
+                                    </div>
+
+
                                 </div>
                             </div>
                         </a>
                     </div>
                 @endforeach
-                
+
                 {{-- logic for pagination  --}}
                 <div class="d-flex justify-content-center w-100 mt-4 mb-5">
-                    <a href="" class="btn ">
-                        {{ $products->links()}}
+                    <a href="" class="btn text-decoration-none">
+                        {{ $products->links() }}
                     </a>
-                    
+
                 </div>
 
                 {{-- end of logic --}}
@@ -304,44 +316,48 @@
         });
 
 
-        const carts = document.querySelectorAll('.carts');
-        carts.forEach(cart => {
-            cart.addEventListener('click', (e) => {
-                // for preveting the default submission 
-                e.preventDefault();
-                // to get the data attribute on which being clicked
-                cardId = cart.getAttribute('data-product-id');
+        // const carts = document.querySelectorAll('.carts');
 
-                fetch(`/carts`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        },
-                        // to pass the product id
-                        body: JSON.stringify({
-                            product_id: cardId
-                        }),
+        // carts.forEach(cart => {
+        //     cart.addEventListener('click', (e) => {
+        //         // for preveting the default submission 
+        //         e.preventDefault();
+        //         // to get the data attribute on which being clicked
+        //         cardId = cart.getAttribute('data-product-id');
 
-                    })
-                    .then(response => response.json())
+        //         fetch(`/carts`, {
+        //                 method: 'POST',
+        //                 headers: {
+        //                     'Content-Type': 'application/json',
+        //                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        //                 },
+        //                 // to pass the product id
+        //                 body: JSON.stringify({
+        //                     product_id: cardId
+        //                 }),
 
-                    .then(data => {
-                        console.log(data);
-                        // Handle the response from the server
-                        if (data.hasOwnProperty('success') && data.success) {
-                            toastr.success('Product added successfully');
-                        } else {
+        //             })
+        //             .then(response => response.json())
 
-                            toastr.error('Product added successfully');
-                        }
-                    })
-                    .catch(error => {
-                        // console.log('asdf');
-                        // console.error(error);  s  
-                    });
-            })
-        })
+        //             .then(data => {
+        //                 // console.log(data);
+        //                 // Handle the response from the server
+        //                 if (data.hasOwnProperty('success') && data.success) {
+        //                     toastr.success('Product added successfully');
+        //                     const updatedCount = parseInt(cartCount.innerHTML) + 1;
+        //                     cartCount.innerHTML = updatedCount;
+
+        //                 } else {
+
+        //                     toastr.error('Product added successfully');
+        //                 }
+        //             })
+        //             .catch(error => {
+        //                 // console.log('asdf');
+        //                 // console.error(error);  s  
+        //             });
+        //     })
+        // })
         // to add the cart in the and modals in the 
         const allCartButton = document.querySelector('.allCart');
         const modalBody = document.querySelector('.modal-body');
@@ -503,6 +519,9 @@
 
         });
 
+        // deletion logic 
+      
+
 
         const totalPrice = (items) => {
             let total = 0;
@@ -532,6 +551,58 @@
             });
 
         })
+
+
+        // this is for the whishlist 
+        const wishlistIcon = document.querySelectorAll('.wishlist');
+
+        const countWish = document.querySelector('.wishlist-count');
+
+        // start of the logic 
+        wishlistIcon.forEach(wishlistBtn => {
+            wishlistBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                let productId = wishlistBtn.getAttribute('data-product-id');
+                console.log(productId);
+                fetch(`wishlist/products`, {
+
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+
+                        // to pass the product id
+                        body: JSON.stringify({
+
+                            // pass the value in sorting 
+                            productId: productId,
+
+                        }),
+
+                    })
+                    .then(response => response.json())
+                    .then((data) => {
+                            console.log(data);
+                            // Handle the response from the server
+                            if (data.hasOwnProperty('success') && data.success) {
+                                toastr.success("Successfully added to the wishlist");
+                                // optimized by incrementing the count instead of querying each time 
+                                const updatedCount = parseInt(countWish.innerHTML) + 1;
+                                countWish.innerHTML = updatedCount;
+
+                            } else {
+                                toastr.error("Already Added to the wishlist");
+                            }
+
+                        }
+
+                    )
+                    .catch(error => console.log(error))
+            })
+        })
+
+        // end of the logic 
     </script>
 @endsection
 @endsection

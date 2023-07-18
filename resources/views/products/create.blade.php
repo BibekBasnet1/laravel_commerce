@@ -22,6 +22,10 @@
             </select>            
             <label for="" class="form-label mt-2 mb-2 fs-6">Product Image</label>
             <input placeholder="" class="form-control mb-2" name="image" type="file">
+
+            <label for="" class="form-label mt-2 mb-2 fs-6">No of Stock</label>
+            <input placeholder="" class="form-control mb-2" name="stock" type="number">
+
             <button type="submit" class="btn btn-success mt-2">
                 Submit
             </button>

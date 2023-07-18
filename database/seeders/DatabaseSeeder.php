@@ -4,12 +4,11 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Permisson;
+use App\Models\Product;
 use App\Models\Roles;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -18,12 +17,20 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-    // $faker = Faker::create();
+        // Retrieve all products
+        $products = Product::all();
 
-    // insert 5 randomzzzz    
-        Permisson::create([
-            'name' => 'read',
-        ]);
+        // Prepare the data for the stocks table
+        $stockData = $products->map(function ($product) {
+            return [
+                'product_id' => $product->id,
+                'quantity' => 5,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        });
+
+        // Insert the data into the stocks table
+        DB::table('stocks')->insert($stockData->toArray());
     }
-
 }

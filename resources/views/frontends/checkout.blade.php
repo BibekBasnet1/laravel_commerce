@@ -141,7 +141,11 @@
                {
                     url = `checkout/order/items/`+ data.orderId;
                     window.location.replace(url);
-                    toastr.succes("Order Placed");
+                    toastr.success("Order Placed");
+               }
+               else
+               {
+                    toastr.info(data.message);
                }
     
             })

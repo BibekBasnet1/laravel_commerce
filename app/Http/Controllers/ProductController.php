@@ -1,14 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Storage;
+
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\User;
+use App\Models\Stock;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+
 
 class ProductController extends Controller
 {
@@ -20,10 +18,10 @@ class ProductController extends Controller
     {
         // to get all the products from the database
 
-        $products = Product::with('user','category')->get();
+        $products = Product::with('user', 'category')->get();
         // dd($products);
         $productCategory = Category::with('products')->get();
-        return view('products.index',compact('products','productCategory'));
+        return view('products.index', compact('products', 'productCategory'));
     }
 
     /**
@@ -32,7 +30,7 @@ class ProductController extends Controller
     public function create()
     {
         $categoryProducts = Category::with('products')->get();
-        return view('products.create',compact('categoryProducts'));
+        return view('products.create', compact('categoryProducts'));
     }
 
     /**
@@ -46,22 +44,29 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'category_id' => 'required|numeric',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'stock' => 'numeric',
         ]);
-        
+
         $imageName = time() . '.' . $request->image->extension();
         $imagePath = $request->file('image')->move('images', $imageName);;
         // dd($imagePath);
         // creating a new data using the validated data
         $product = Product::create([
-        'name' => $validatedData['name'],
-        'price' => $validatedData['price'],
-        'user_id' => auth()->user()->id, // Assuming you want to associate the product with the currently authenticated user
-        'category_id' => $request->input('category_id'),
-        'image' => $imagePath,
+            'name' => $validatedData['name'],
+            'price' => $validatedData['price'],
+            'user_id' => auth()->user()->id, // Assuming you want to associate the product with the currently authenticated user
+            'category_id' => $request->input('category_id'),
+            'image' => $imagePath,
         ]);
+        
+        $stockAdd = Stock::create([
+                'product_id' => $product->id,
+                'quantity' => $request->input('stock'),
+            ]
+        );
 
         // if it is successfull redirect the user
-        return redirect()->route('products.index')->with('success','Product created Successfully!');
+        return redirect()->route('products.index')->with('success', 'Product created Successfully!');
     }
 
     /**
@@ -71,7 +76,7 @@ class ProductController extends Controller
     {
         // to get all the products
         $products = Product::get();
-        return view('products.index',compact('products'));
+        return view('products.index', compact('products'));
     }
 
     /**
@@ -80,9 +85,9 @@ class ProductController extends Controller
     public function edit(string $id)
     {
         // to take the id that matches with it
-        $product = Product::where('id',$id)->first();
+        $product = Product::where('id', $id)->first();
         // it will return view for the products
-        return view('products.edit',compact('product'));
+        return view('products.edit', compact('product'));
     }
 
     /**
@@ -95,7 +100,7 @@ class ProductController extends Controller
             'price' => 'numeric|required',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        
+
         // dd($request->all());
         $product = Product::findOrFail($id);
 
@@ -130,7 +135,7 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $product->delete();
 
-        return redirect()->back()->with("success","Product delete successfully");
+        return redirect()->back()->with("success", "Product delete successfully");
     }
 
 
@@ -138,7 +143,7 @@ class ProductController extends Controller
     {
         // to retrieve all the delete data
         $products = Product::onlyTrashed()->get();
-        return view('products.deletedData',compact('products'));
+        return view('products.deletedData', compact('products'));
     }
 
     public function restore($id)
@@ -146,9 +151,7 @@ class ProductController extends Controller
         // to find the deleted product based on the product id
         $product = Product::withTrashed()->findOrFail($id);
         $product->restore();
-        
-        return redirect()->back()->with('success','Products restored Successfully!');
+
+        return redirect()->back()->with('success', 'Products restored Successfully!');
     }
-
-
 }

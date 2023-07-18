@@ -3,7 +3,11 @@
 use App\Http\Controllers\FrontendController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Middleware;
+use App\Mail\OrderShipped;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Mail;
+// use App\Mail\OrderShipped;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,6 +25,8 @@ use Illuminate\Support\Facades\View;
 
 // this is the view for the categories
 // Route::view('/categories/cart','frontends.addCart')->name('frontends.addCart');
+
+
 Route::view('/categories', 'frontends.categories')->name('frontends.categories');
 
 Route::view('/sidebarCategories','frontends.sidebarCategories')->name("frontends.sidebarCategories");
@@ -70,6 +76,18 @@ Route::get('searchInput/', [App\Http\Controllers\FrontendController::class, 'sea
 
 // for searching the page and redirecting to the new page
 Route::post('searchInput/sortByprice/', [App\Http\Controllers\FrontendController::class, 'sortByPrice'])->name('frontends.sortByPrice');
+
+// this is for the wishlist 
+Route::post('wishlist/products',[App\Http\Controllers\WishlistController::class , 'store'])->name('wishlists.store');
+
+// this is for the wishlist count 
+Route::post('wishlist/count',[App\Http\Controllers\WishlistController::class , 'count'])->name('wishlists.count');
+
+// this is for the wishlist details 
+Route::post('allwishlist/products',[App\Http\Controllers\WishlistController::class , 'getWishListDetails'])->name('wishlists.getWishListDetails');
+
+// this is for the wish delete
+Route::post('wishlist-delete/',[App\Http\Controllers\WishlistController::class , 'destroy'])->name('wishlists.destroy');
 
 Route::get('/login', function () 
 {
@@ -153,6 +171,17 @@ Route::post('/user/sliders/update/{id}',[App\Http\Controllers\SliderController::
 Route::post('/user/sliders/destroy/{id}',[App\Http\Controllers\SliderController::class , 'destroy'])->name('sliders.destroy');
 
 
+// this is for the stocks section 
+
+Route::get('/user/products/stocks',[App\Http\Controllers\StocksController::class , 'index'])->name('stocks.index');
+Route::get('/user/products/stocks/create',[App\Http\Controllers\StocksController::class , 'create'])->name('stocks.create');
+Route::post('/user/products/stocks/store',[App\Http\Controllers\StocksController::class , 'store'])->name('stocks.store');
+Route::get('/user/products/stocks/edit/{id}',[App\Http\Controllers\StocksController::class , 'edit'])->name('stocks.edit');
+Route::post('/user/products/stocks/update/{id}',[App\Http\Controllers\StocksController::class , 'update'])->name('stocks.update');
+Route::post('/user/products/stocks/delete/{id}',[App\Http\Controllers\StocksController::class , 'destroy'])->name('stocks.destroy');
+
+
 });
+
 
 

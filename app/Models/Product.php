@@ -35,6 +35,18 @@ class Product extends Model
         return $this->belongsToMany(Cart::class);
     }
 
+    // wishlist will be of products so it belongs to product class 
+    public function wishlists()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    // has many stocks
+    public function stocks()
+    {
+        return $this->hasOne(Stock::class);
+    }
+
     // logic for deleting the image 
     protected static function boot()
     {

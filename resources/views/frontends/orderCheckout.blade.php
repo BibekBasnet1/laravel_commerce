@@ -71,6 +71,7 @@
               
                 </tbody>
             </table>
+            
             <button class="btn btn-primary" id="element-to-print" onclick="generatePDF()">
                 Download Receipt
             </button>

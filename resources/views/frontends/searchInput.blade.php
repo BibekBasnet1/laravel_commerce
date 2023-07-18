@@ -58,10 +58,21 @@
                                 <p class="m-0" style="color: #fc6000;font-size:1rem;">{{$product->name}}</p>
                                 <p class="m-0 text-black">{{$product->category->name}}</p>
                                 <p class="fs-5" style="color: #fc6000;">Price : {{$product->price}}</p>
-                                <a href="" class="carts d-flex justify-content-end" data-product-id="{{$product->id}}">
-                                    {{-- <i class="fas fa-cart-plus"></i> --}}
-                                    <i class="fa-solid fa-cart-shopping data-cart-id "></i>
-                                </a>
+                                
+                                <div class="icon-container w-100 d-flex justify-content-end">
+                                    {{-- this is for directly adding to the cart  --}}
+                                    <a href="" class="carts" data-product-id="{{ $product->id }}">
+                                        {{-- <i class="fas fa-cart-plus"></i> --}}
+                                        <i class="fa-solid fa-cart-shopping data-cart-id "></i>
+                                    </a>
+
+                                    {{-- this is for the wishlist --}}
+                                    <a href="" class="wishlist" data-product-id="{{ $product->id }}">
+                                        <i class="fa-solid fa-heart text-primary mx-3 "></i>
+                                    </a>
+                                </div>
+
+
                             </div>
                         </div>
             {{-- </tr> --}}
@@ -82,47 +93,10 @@
     // taking all the data which is send through controller
     const categoriesById = @json($categories);
     
-    const carts = document.querySelectorAll('.carts');
-        carts.forEach(cart=>{
-            cart.addEventListener('click',(e)=>{
-                // for preveting the default submission 
-                e.preventDefault();
-                // to get the data attribute on which being clicked
-                cardId = cart.getAttribute('data-product-id');
-                
-                fetch(`/carts`,{
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}', 
-                    },
-                    // to pass the product id
-                    body: JSON.stringify({ product_id: cardId }),
-                    
-                })
-                .then(response => response.json())
-                
-                .then(data => {
-                    console.log(data);
-                    // Handle the response from the server
-                    if(data.hasOwnProperty('success') && data.success)
-                    {
-                        toastr.success('Product added successfully');
-                    }else{
-                        
-                        toastr.error('Product added successfully');
-                    }
-                })    
-                .catch(error => {
-                    // console.log('asdf');
-                    // console.error(error);  s  
-                });         
-            })
-        })
-        // to add the cart in the and modals in the 
-        const allCartButton = document.querySelector('.allCart');
-        const modalBody = document.querySelector('.modal-body');
-        const modalFooter = document.querySelector('.modal-footer');
+    // to add the cart in the and modals in the 
+    const allCartButton = document.querySelector('.allCart');
+    const modalBody = document.querySelector('.modal-body');
+    const modalFooter = document.querySelector('.modal-footer');
         
         
         var items = {
@@ -286,13 +260,6 @@
 
         // it takes out the value for the search 
         const searchParam = new URLSearchParams(window.location.search).get('search');
-        console.log(searchParam)
-        // Split the search parameter into an array of individual words
-        // const searchWords = searchParam.split(/\s+/);
-
-        // Concatenate the search words into a single string
-        // const concatenatedSearch = searchWords.join(' ');
-
 
         // this code is for sorting the elements 
         let sortingElement = document.querySelector('#sorting');

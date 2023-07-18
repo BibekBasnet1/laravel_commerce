@@ -55,4 +55,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Roles::class,'user_roles','user','role');
     }    
 
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
 }
