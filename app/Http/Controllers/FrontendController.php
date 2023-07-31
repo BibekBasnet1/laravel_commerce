@@ -49,7 +49,7 @@ class FrontendController extends Controller
     {
         $slider = Slider::get();
         $featuredProducts = Product::get();
-        $products = Product::cursorPaginate(6);
+        $products = Product::cursorPaginate(10);
         $categories = Category::with('subcategory')->where('parent_id',null)->get();    
         // dd($categories->toArray());
         return view('frontends.show',compact('slider','products','categories','featuredProducts'));
@@ -59,16 +59,17 @@ class FrontendController extends Controller
     {
         //  to get the products based on the category 
         $categories = Category::with('products')->where('id',$id)->get();
-        // dd($categories->toArray());
+        // dd($categories);
         // $sidebarCategories = Category::with('subcategory')->where('parent_id',$id)->get();
         return view('frontends.categories', compact('categories'));
     }
 
     public function sidebarCategory($id)
     {
+        
         $sidebarCategories = Category::with('products','subcategory')->where('parent_id',$id)->get();
-        // dd($sidebarCategories->toArray());
         return view('frontends.sidebarCategories', compact('sidebarCategories'));
+
     }
 
     public function sortByPrice(Request $request)
@@ -99,9 +100,7 @@ class FrontendController extends Controller
         );
        
     }
-
     
-
 
     public function checkout()
     {

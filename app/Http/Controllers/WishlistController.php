@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\User;
 use App\Models\Wishlist;
 use Illuminate\Database\Query\JoinClause;
@@ -77,6 +78,8 @@ class WishlistController extends Controller
 
         $wishList->save();
 
+        $wishlistCount = Cart::where('user_id', auth()->user()->id)->count();
+
         return json_encode(
             [
                 'success' => true,
@@ -91,7 +94,7 @@ class WishlistController extends Controller
     {
 
         // get the userId 
-        $userId = $request->userId;
+        $userId = auth()->user()->id;
 
         // join the wishlists table with the products table if the user_id is same in both table 
         $userProducts = DB::table('wishlists')
@@ -99,12 +102,14 @@ class WishlistController extends Controller
                 $join->on('wishlists.product_id', '=', 'products.id');
             })
             ->get();
-        // dd($userProducts);
-        return json_encode(
+        
+        return json_encode
+        (
             [
                 'wishListProduct' => $userProducts,
             ]
         );
+
     }
 
 

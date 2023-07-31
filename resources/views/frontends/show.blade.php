@@ -96,6 +96,7 @@
                 </a>
 
                 <ul class="list-unstyled ps-0">
+
                     {{-- Start of the listing --}}
                     @foreach ($categories as $category)
                         <li class="mb-1">
@@ -109,14 +110,20 @@
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     @foreach ($category->subcategory as $subcategory)
                                         <li class="">
-                                            <a href="{{ route('frontends.categories', ['id' => $subcategory->id]) }}">
+
+                                            {{-- for the subcategories --}}
+                                            <a href="{{ url('categories/' . $subcategory->id) }}">
+
                                                 <button id="subcategory"
                                                     class="btn btn-toggle d-inline-flex align-items-center ms-3 rounded border-0 collapsed"
                                                     data-bs-toggle="collapse" data-bs-target="{{ '#' . $subcategory->id }}"
                                                     aria-expanded="false">
                                                     {{ $subcategory->name }}
                                                 </button>
+
                                             </a>
+                                            {{-- end of the subcategories --}}
+
                                             {{-- <a href="{{route('frontends.sidebarCategories',['id'=>$subcategory->id])}}">
                                           
                                         </a> --}}
@@ -154,17 +161,29 @@
             <div id="carouselExample" class="carousel slide w-100">
 
                 <div class="carousel-inner border">
+
                     @foreach ($slider as $item)
                         <div class="carousel-item {{ $loop->first ? ' active' : '' }}">
                             <a href="">
-                                <img src="{{ asset('images/' . $item->image) }}"
-                                    class="d-block w-100 img-fluid carousel-image" alt="..."
-                                    style="max-width: 100%; max-height: 400px;">
+                                
+                                {{-- if the image exist in the public folder itself show it  otherwise go to images folder and find it--}}
+
+                                @if (File::exists(public_path($item->image)))
+                                    <img src="{{ asset($item->image) }}" class="d-block w-100 img-fluid carousel-image"
+                                        style="max-width: 100%; max-height: 400px;" alt="...">
+                                @else
+                                    <img src="{{ asset('images/' . $item->image) }}"
+                                        class="d-block w-100 img-fluid carousel-image"
+                                        style="max-width: 100%; max-height: 400px;" alt="...">
+                                @endif
+
                             </a>
                             <div class="carousel-caption d-none d-md-block">
+
                                 <h5 class="text-info">{{ $item->name }}</h5>
                                 <p class="text-white">{{ $item->caption }}</p>
-                                <a href="{{ route('frontends.categories', ['id' => $item->category_id]) }}">
+
+                                <a href="{{ url('categories/' . $item->category_id) }}">
                                     <button class="btn btn-primary">Shop Now</button>
                                 </a>
 
@@ -520,7 +539,7 @@
         });
 
         // deletion logic 
-      
+
 
 
         const totalPrice = (items) => {

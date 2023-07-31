@@ -17,16 +17,20 @@
             </div>
         @endif
  
-    <form action="{{route('sliders.store')}}" class="form" method="post">
+    <form action="{{route('sliders.store')}}" class="form" method="post" enctype="multipart/form-data">
         @csrf
         <div class="form-group container">     
             <label for="" class="form-label mt-2 mb-2 fs-6">Slider Name</label> 
             <input placeholder="" class="form-control mb-2" name="name" type="text" value="">
             <label for="" class="form-label mt-2 mb-2 fs-6">Caption Name</label> 
             <input placeholder="" class="form-control mb-2" name="caption" type="text" value="">
-            <label for="" class="form-label mt-2 mb-2 fs-6">Image Name</label> 
-            <input placeholder="" class="form-control mb-2" name="image" type="text" value="">
+            {{-- <label for="" class="form-label mt-2 mb-2 fs-6">Image Name</label> 
+            <input placeholder="" class="form-control mb-2" name="image" type="text" value=""> --}}
+            <label for="" class="form-label mt-2 mb-2 fs-6">Product Image</label>
+            <input placeholder="" class="form-control mb-2" name="image" type="file">
+
             <label for="" class="form-label mt-2 mb-2 fs-6">Categories Name</label> <br>
+            
             <select name="category_id" class="form-select">
                 @foreach ($categories as $key=> $category)
                     <option value="{{$category->id}}">{{$category->name}}</option>

@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Mail;
 // Route::view('/categories/cart','frontends.addCart')->name('frontends.addCart');
 
 
-Route::view('/categories', 'frontends.categories')->name('frontends.categories');
+// Route::view('/categories', 'frontends.categories')->name('frontends.categories');
 
 Route::view('/sidebarCategories','frontends.sidebarCategories')->name("frontends.sidebarCategories");
 
@@ -52,7 +52,6 @@ Route::post('/carts',[App\Http\Controllers\CartController::class, 'store'])->nam
 
 // this route is adding the cart section 
 Route::post('/carts-store',[App\Http\Controllers\CartController::class, 'addToCart'])->name('frontends.addToCart');
-
 
 // this is used to add the form 
 Route::get('/cart-details', [App\Http\Controllers\CartController::class, 'getCartDetails'])->name('cart.details');

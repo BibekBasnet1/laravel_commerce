@@ -48,8 +48,8 @@ class ProductController extends Controller
         ]);
 
         $imageName = time() . '.' . $request->image->extension();
-        $imagePath = $request->file('image')->move('images', $imageName);;
-        // dd($imagePath);
+        $imagePath = $request->file('image')->move('images', $imageName);
+        
         // creating a new data using the validated data
         $product = Product::create([
             'name' => $validatedData['name'],

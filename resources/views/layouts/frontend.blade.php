@@ -112,27 +112,35 @@
 
             <div class="ms-5">
                 {{-- it is beasically used to get the product id --}}
-                <a href="#" class="allCart" data-bs-toggle="modal" data-bs-target="#cart_model"
-                    data-user-id="{{ auth()->user()->id }}">
+                <a href="" class="allCart" data-bs-toggle="modal" data-bs-target="#cart_model"
+                    {{-- data-user-id="{{ auth()->user()->id }}"> --}}>
                     <i class="fa-solid fa-cart-shopping data-allCart-id ">
                         <span class="cart-count">
                             <?php
-                            $userId = auth()->user()->id;
-                            $wishlistCount = App\Models\Cart::where('user_id', $userId)->count();
-                            echo $wishlistCount;
+                            
+                            if (auth()->check()) {
+                                $userId = auth()->user()->id;
+                                $wishlistCount = App\Models\Cart::where('user_id', $userId)->count();
+                                echo $wishlistCount;
+                            }
+                            
                             ?>
+
                         </span>
                     </i>
                 </a>
 
                 <a href="#" class="allWish" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                    data-user-id="{{ auth()->user()->id }}">
+                    {{-- data-user-id="{{ auth()->user()->id }}"> --}}>
                     <i class="fa-solid fa-heart text-primary mx-3 wishCount">
                         <span class="wishlist-count">
                             <?php
-                            $userId = auth()->user()->id;
-                            $wishlistCount = App\Models\Wishlist::where('user_id', $userId)->count();
-                            echo $wishlistCount;
+                            if (auth()->check()) {
+                                $userId = auth()->user()->id;
+                                $wishlistCount = App\Models\Wishlist::where('user_id', $userId)->count();
+                                echo $wishlistCount;
+                            }
+                            
                             ?>
                         </span>
                     </i>
@@ -299,9 +307,33 @@
     <script>
         // Select the search input field
         let searchInput = document.querySelector('#searchInput');
+        let allCart = document.querySelector(".allCart");
         let formSearch = document.querySelector('.form-search');
+        let wishList = document.querySelectorAll('.wishlist');
 
+        let authUserId = @json(auth()->check());
+        let loginRoute = @json(route('login'));
         let prevSearchValue = '';
+
+
+        // if the user click on the cart button and is not authenticated
+        allCart.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!authUserId) {
+                window.location.href = loginRoute;
+            }
+        })
+
+        wishList.forEach(wish => {
+            wish.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (!authUserId) {
+                    window.location.href = loginRoute;
+                }
+            });
+        });
+
+
 
         function autocomplete(inp, arr) {
             var currentFocus;
@@ -456,217 +488,215 @@
         });
 
 
-
-
-        // this code will dynamically update the wishlist count
-        // const updateCountWish = ()=>
-        // {
-        //   // sending towards the route
-        //     fetch(`{{ route('wishlists.count') }}`, {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'X-CSRF-TOKEN': '{{ csrf_token() }}',
-        //         },
-        //     })
-        //     .then(response => response.json())
-        //     .then((data)=>{
-        //       if(data.success){
-        //         // if true then 
-        //         countWish.innerHTML = data.count;
-        //       }
-        //     })
-
-        // }
-
         // THIS CODE IS FOR ADDING TO THE CART AND DISPLAY HOW MANY ARE THERE IN THE CARTS 
 
         const carts = document.querySelectorAll('.carts');
         const cartCount = document.querySelector('.cart-count');
-        carts.forEach(cart => {
-            cart.addEventListener('click', (e) => {
-                // for preveting the default submission 
-                e.preventDefault();
-                // to get the data attribute on which being clicked
-                cardId = cart.getAttribute('data-product-id');
+        if (authUserId) {
+            carts.forEach(cart => {
+                cart.addEventListener('click', (e) => {
 
-                fetch(`/carts`, {
+                    // for preveting the default submission 
+                    e.preventDefault();
+                    // to get the data attribute on which being clicked
+                    cardId = cart.getAttribute('data-product-id');
+
+                    fetch(`/carts`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            },
+                            // to pass the product id
+                            body: JSON.stringify({
+                                product_id: cardId
+                            }),
+
+                        })
+                        .then(response => response.json())
+
+                        .then(data => {
+                            // console.log(data);
+                            // Handle the response from the server
+                            if (data.hasOwnProperty('success') && data.success) {
+                                toastr.success('Product added successfully');
+                                const updatedCount = parseInt(cartCount.innerHTML) + 1;
+                                cartCount.innerHTML = updatedCount;
+
+                            } else {
+
+                                toastr.error('Product added successfully');
+                            }
+                        })
+                        .catch(error => {
+                            // console.log('asdf');
+                            // console.error(error);  s  
+                        });
+
+                });
+
+            })
+        } else {
+            // if the user clicks on the cart they will be redirected to the new login page 
+            carts.forEach((cart) => {
+                cart.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.location.href = loginRoute;
+                })
+            })
+        }
+
+        const wishes = document.querySelector('.allWish');
+        const modalWish = document.querySelector('.modal-body-modal-whislist');
+        // console.log(modalWish)
+        // console.log(modalWish)
+        if (authUserId) {
+            wishes.addEventListener('click', (e) => {
+                // prevent default submission
+                e.preventDefault();
+                // userId = wishes.getAttribute('data-user-id');
+
+                fetch(`allwishlist/products`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         },
                         // to pass the product id
-                        body: JSON.stringify({
-                            product_id: cardId
-                        }),
-
+                        // body: JSON.stringify({
+                        //     userId: userId,
+                        // }),
                     })
+
                     .then(response => response.json())
 
-                    .then(data => {
-                        // console.log(data);
-                        // Handle the response from the server
-                        if (data.hasOwnProperty('success') && data.success) {
-                            toastr.success('Product added successfully');
-                            const updatedCount = parseInt(cartCount.innerHTML) + 1;
-                            cartCount.innerHTML = updatedCount;
+                    .then((data) => {
+                        // Clear existing content
+                        modalWish.innerHTML = '';
 
-                        } else {
+                        let products = data.wishListProduct;
+                        products.map(function(item) {
+                            // console.log(item);
 
-                            toastr.error('Product added successfully');
-                        }
-                    })
-                    .catch(error => {
-                        // console.log('asdf');
-                        // console.error(error);  s  
-                    });
-            })
-        })
+                            const divElement = document.createElement('div');
 
-        const wishes = document.querySelector('.allWish');
-        const modalWish = document.querySelector('.modal-body-modal-whislist');
-        console.log(modalWish)
-        // console.log(modalWish)
-        wishes.addEventListener('click', (e) => {
-            // prevent default submission
-            e.preventDefault();
-            userId = wishes.getAttribute('data-user-id');
+                            // Adding the class row
+                            divElement.classList.add('row', 'm-2');
 
-            fetch(`allwishlist/products`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    },
-                    // to pass the product id
-                    body: JSON.stringify({
-                        userId: userId,
-                    }),
-                })
+                            const imageColumn = document.createElement('div');
+                            imageColumn.classList.add('col');
+                            // Adding the class col and creating a new element for the image column
 
-                .then(response => response.json())
+                            const productImage = document.createElement('img');
 
-                .then((data) => {
-                    // Clear existing content
-                    modalWish.innerHTML = '';
+                            // productImage.src = '{{ asset('images') }}' + "/" + item.image;
+                            productImage.src =
+                                '@if (file_exists(public_path(' item.image '))){{ asset('') }}' + "/" +
+                                item.image +
+                                '@else{{ asset('images/fashion.jpg') }}@endif';
 
-                    let products = data.wishListProduct;
-                    products.map(function(item) {
-                        // console.log(item);
+                            productImage.style.width = "200px";
+                            productImage.style.height = "100px";
+                            imageColumn.appendChild(productImage);
 
-                        const divElement = document.createElement('div');
+                            // Creating a new element for the product column
 
-                        // Adding the class row
-                        divElement.classList.add('row', 'm-2');
+                            const productColumn = document.createElement('div');
+                            productColumn.classList.add('col');
+                            const productName = document.createElement('p');
 
-                        const imageColumn = document.createElement('div');
-                        imageColumn.classList.add('col');
-                        // Adding the class col and creating a new element for the image column
+                            productName.classList.add('fs-5');
 
-                        const productImage = document.createElement('img');
-
-                        // productImage.src = '{{ asset('images') }}' + "/" + item.image;
-                        productImage.src =
-                            '@if (file_exists(public_path(' item.image '))){{ asset('') }}' + "/" +
-                            item.image +
-                            '@else{{ asset('images/fashion.jpg') }}@endif';
-
-                        productImage.style.width = "200px";
-                        productImage.style.height = "100px";
-                        imageColumn.appendChild(productImage);
-
-                        // Creating a new element for the product column
-
-                        const productColumn = document.createElement('div');
-                        productColumn.classList.add('col');
-                        const productName = document.createElement('p');
-
-                        productName.classList.add('fs-5');
-
-                        // adding the quantity name 
-                        productName.textContent = 'Product Name: ' + item.name;
-                        const productPrice = document.createElement('p');
-                        productPrice.classList.add('fs-5');
-                        productPrice.textContent = 'Product Price: ' + item.price;
-                        productColumn.appendChild(productName);
-                        productColumn.appendChild(productPrice);
+                            // adding the quantity name 
+                            productName.textContent = 'Product Name: ' + item.name;
+                            const productPrice = document.createElement('p');
+                            productPrice.classList.add('fs-5');
+                            productPrice.textContent = 'Product Price: ' + item.price;
+                            productColumn.appendChild(productName);
+                            productColumn.appendChild(productPrice);
 
 
-                        const buttonContainer = document.createElement('div');
-                        buttonContainer.classList.add('btn-container',
-                            'row','w-100');
+                            const buttonContainer = document.createElement('div');
+                            buttonContainer.classList.add('btn-container',
+                                'row', 'w-100');
 
-                        const deleteButton = document.createElement('button');
-                        // deleteButton.classList.add('col');
-                        deleteButton.textContent = 'Delete';
-                        deleteButton.classList.add('btn', 'btn-danger', 'delete-btn', 'm-1');
-
-
-                        deleteButton.style.width = "200px";
-
-                        const addToCartBtn = document.createElement('button');
-                        addToCartBtn.classList.add('btn', 'btn-success', 'addBtn', 'm-2');
-                        addToCartBtn.textContent = 'Checkout';
-
-                        addToCartBtn.style.width = "200px";
+                            const deleteButton = document.createElement('button');
+                            // deleteButton.classList.add('col');
+                            deleteButton.textContent = 'Delete';
+                            deleteButton.classList.add('btn', 'btn-danger', 'delete-btn', 'm-1');
 
 
-                        // Set anchor link dynamically
-                        const anchorLink = document.createElement('a');
-                        anchorLink.href = '{{route('frontends.checkout')}}'; // Replace with your desired URL
-                        anchorLink.appendChild(addToCartBtn);
-                    
-                        buttonContainer.appendChild(deleteButton);
-                        buttonContainer.appendChild(anchorLink);
+                            deleteButton.style.width = "200px";
+
+                            const addToCartBtn = document.createElement('button');
+                            addToCartBtn.classList.add('btn', 'btn-success', 'addBtn', 'm-2');
+                            addToCartBtn.textContent = 'Checkout';
+
+                            addToCartBtn.style.width = "200px";
 
 
-                    divElement.appendChild(imageColumn);
-                    divElement.appendChild(productColumn);
-                    // divElement.appendChild(deleteButton);
-                    // divElement.appendChild(anchorLink);
-                    divElement.appendChild(buttonContainer);
-                    modalWish.appendChild(divElement);
+                            // Set anchor link dynamically
+                            const anchorLink = document.createElement('a');
+                            anchorLink.href =
+                                '{{ route('frontends.checkout') }}'; // Replace with your desired URL
+                            anchorLink.appendChild(addToCartBtn);
 
-                    // deletion logic
-                    deleteButton.addEventListener('click', () => {
+                            buttonContainer.appendChild(deleteButton);
+                            buttonContainer.appendChild(anchorLink);
 
-                        // hits the route in the wishlistcontainer destroy
-                        fetch(`wishlist-delete/`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                    },
-                                    // to pass the id of the product that has been clicked 
-                                    body: JSON.stringify({
-                                        product_id: item.product_id,
-                                    }),
-                                })
 
-                                //  to get the response form the contoller as json format 
-                                .then(response => response.json())
+                            divElement.appendChild(imageColumn);
+                            divElement.appendChild(productColumn);
+                            // divElement.appendChild(deleteButton);
+                            // divElement.appendChild(anchorLink);
+                            divElement.appendChild(buttonContainer);
+                            modalWish.appendChild(divElement);
 
-                                // to get the data we got from the json 
-                                .then((data) => {
-                                    toastr.warning("data delted succesfully!");
+                            // deletion logic
+                            deleteButton.addEventListener('click', () => {
 
-                                    // removes the div element when being delete button clicked
-                                    divElement.remove();
+                                // hits the route in the wishlistcontainer destroy
+                                fetch(`wishlist-delete/`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        },
+                                        // to pass the id of the product that has been clicked 
+                                        body: JSON.stringify({
+                                            product_id: item.product_id,
+                                        }),
+                                    })
 
-                                })
+                                    //  to get the response form the contoller as json format 
+                                    .then(response => response.json())
 
-                                // to find if something has gone wrong 
-                                .catch(error => console.log(error))
+                                    // to get the data we got from the json 
+                                    .then((data) => {
+                                        toastr.warning("data delted succesfully!");
+
+                                        // removes the div element when being delete button clicked
+                                        divElement.remove();
+
+                                    })
+
+                                    // to find if something has gone wrong 
+                                    .catch(error => console.log(error))
+
+                            })
 
                         })
-
                     })
-                })
 
-                .catch(error => console.log(error));
+                    .catch(error => console.log(error));
 
-        })
+            })
+        } else {
+            wishes.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = loginRoute;
+            })
+        }
     </script>
     @yield('script')
 </body>

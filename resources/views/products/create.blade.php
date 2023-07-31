@@ -16,9 +16,11 @@
             <input placeholder="" class="form-control mb-2" name="price" type="number" value="">
             <label for="" class="form-label mt-2 mb-2 fs-6">Category</label>
             <select name="category_id" class="form-select">
+
                 @foreach ($categoryProducts as $key=> $category)
                     <option value="{{$category->id}}">{{$category->name}}</option>
                 @endforeach
+            
             </select>            
             <label for="" class="form-label mt-2 mb-2 fs-6">Product Image</label>
             <input placeholder="" class="form-control mb-2" name="image" type="file">

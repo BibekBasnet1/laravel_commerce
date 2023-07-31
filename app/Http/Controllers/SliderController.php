@@ -16,18 +16,19 @@ class SliderController extends Controller
     {
         // to get all the aliders
         $sliders  = Slider::with('category')->get();
-        return view('sliders.index',compact('sliders'));
+        // dd($sliders->toArray());
+        return view('sliders.index', compact('sliders'));
     }
 
     /**
      * Show the form for creating a new resource.
-    */
+     */
 
     public function create()
     {
-        
+
         $categories = Category::with('sliders')->get();
-        return view('sliders.create',compact('categories'));
+        return view('sliders.create', compact('categories'));
     }
 
     /**
@@ -40,17 +41,22 @@ class SliderController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'caption' => 'required|string',
-            'image' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category_id' => 'required|numeric',
         ]);
-        
+
         // if validation fails it returns with certain errors
         if ($validator->fails()) {
             // dd($validator->getMessageBag());
             return back()->withErrors($validator)->withInput();
         }
 
+        // move the image that was requested to upload with the extension name
+        $imageName = time() . '.' . $request->image->extension();
+        $imagePath = $request->file('image')->move('images', $imageName);
+        
         // to get the categories too
+
         // $sliderName = Category::with('categories')->get();
         $slider = Slider::with("category")->get();
 
@@ -58,11 +64,11 @@ class SliderController extends Controller
         $sliders = new Slider();
         $sliders->name = $request->name;
         $sliders->caption = $request->caption;
-        $sliders->image = $request->image;
+        $sliders->image = $imagePath;
         $sliders->category_id = $request->category_id;
         $sliders->save();
 
-        return redirect()->route('sliders.index')->with('success',"Created sliders succcesfully");
+        return redirect()->route('sliders.index')->with('success', "Created sliders succcesfully");
     }
 
     /**
@@ -79,15 +85,15 @@ class SliderController extends Controller
     public function edit(string $id)
     {
         // it will get the slider with the id we need
-        $slider = Slider::where('id',$id)->first();
+        $slider = Slider::where('id', $id)->first();
         $sliders  = Slider::with('category')->get();
-        return view('sliders.edit',compact('slider','sliders'));
-
+        // dd($sliders);
+        return view('sliders.edit', compact('slider', 'sliders'));
     }
 
     /**
      * Update the specified resource in storage.
-    */
+     */
 
     public function update(Request $request, string $id)
     {
@@ -99,7 +105,7 @@ class SliderController extends Controller
             'image' => 'required|string',
             'category_id' => 'required|numeric',
         ]);
-        
+
         // if validation fails it returns with certain errors
         if ($validator->fails()) {
             // dd($validator->getMessageBag());
@@ -116,8 +122,7 @@ class SliderController extends Controller
         $slider->image = $request->input('image');
         $slider->save();
 
-        return redirect()->back()->with('success','Updated Successfully');
-
+        return redirect()->back()->with('success', 'Updated Successfully');
     }
 
     /**
@@ -125,6 +130,9 @@ class SliderController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // find the slider which you want to delete and delete it with the help of id
+        $slider = Slider::findOrFail($id);
+        $slider->delete();
+        return redirect()->back()->with('success', 'Deleted SuccessFully');
     }
 }

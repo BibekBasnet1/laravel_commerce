@@ -34,6 +34,7 @@ class CartController extends Controller
     public function store(Request $request)
     {
         // to store the the data in the database when being clicked 
+
         // to validate the request first 
         $validator = Validator::make($request->all(), [
             // 'user_id' => 'numeric',
@@ -89,11 +90,17 @@ class CartController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
+        // check if the user is authenticated
+        if(!auth()->check())
+        {
+            return view('auth.login');
+        }
+
         $userId = auth()->user()->id;
         $productId = $request->product_id;
         $product_quantity = $request->product_quantity;
     
-        $carts = $cart = Cart::updateOrCreate(
+        $carts = Cart::updateOrCreate(
             [
                 'product_id' => $productId,
                 'user_id' => $userId
