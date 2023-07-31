@@ -16,7 +16,7 @@ class OrderDetailsController extends Controller
     {
         $orderDetails = Order::with('order_details.product','user')->get();
         // dd($orderDetails->toArray());
-   
+        // dd($orderDetails->toArray());
         return view('order_details.index',compact('orderDetails'));
     }
 
@@ -28,7 +28,7 @@ class OrderDetailsController extends Controller
         // dd($orderId);
         // to take the product information with the help of products
         $productInformation = Order::with('order_details.product', 'user')->findOrFail($orderId);
-      
+        // dd($productInformation);
         
 
         return json_encode(

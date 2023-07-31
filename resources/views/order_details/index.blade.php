@@ -57,7 +57,13 @@
                         <td>{{ $order->id }}</td>
 
                         {{-- adding the sum of price  --}}
-                        <td>{{ $order->order_details()->sum('price') }}</td>
+                        <td>
+                            @if ($order->order_details()->count() > 1)
+                                {{ $order->order_details()->sum('price') }}
+                            @else
+                                {{ $order->total }}
+                            @endif
+                        </td>
 
                         {{-- <td>{{ $order->order_details()->sum('quantity') }}</td> --}}
 
@@ -116,8 +122,8 @@
                         let order_details = document.createElement('p');
 
                         // adding classes
-                        nameElement.classList.add('fs-4','text-center');
-                        price.classList.add('fs-4','text-success');
+                        nameElement.classList.add('fs-4', 'text-center');
+                        price.classList.add('fs-4', 'text-success');
                         order_details.classList.add('fs-4');
 
                         // giving properties
@@ -137,19 +143,20 @@
                             let productNameElement = document.createElement('p');
                             let productPriceElement = document.createElement('p');
                             // let productQuantityElement = document.createElement('p');
-                            
+
                             productNameElement.textContent = productName + orderDetail.product.name;
-                            productPriceElement.textContent = (productPrice + orderDetail.product.price) + " * " +  orderDetail.quantity;
+                            productPriceElement.textContent = (productPrice + orderDetail.product
+                                .price) + " * " + orderDetail.quantity;
                             // productQuantityElement.textContent = productQuantity + orderDetail.quantity;
 
                             // Append the <p> element to the <div> element
                             divElement.appendChild(productNameElement);
-                            divElement.appendChild(productPriceElement);    
+                            divElement.appendChild(productPriceElement);
 
                             // divElement.appendChild(productQuantityElement);
                         }
 
-                     
+
                         divElement.appendChild(order_details);
                         productInformation.appendChild(divElement);
                         modalFooter.appendChild(price);
