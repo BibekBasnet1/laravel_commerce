@@ -46,6 +46,12 @@ class Product extends Model
     {
         return $this->hasOne(Stock::class);
     }
+    
+
+    public function orderDetail()
+    {
+        return $this->hasOne(OrderDetail::class);
+    }
 
     // logic for deleting the image 
     protected static function boot()

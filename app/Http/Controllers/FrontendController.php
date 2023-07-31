@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Slider;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -169,7 +170,8 @@ class FrontendController extends Controller
 
     public function imageCheckout(int $id )
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with('stocks')->findOrFail($id); 
+        // dd($product->toArray()); 
         return view('frontends.productDescription',compact('product'));
     }
 

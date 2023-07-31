@@ -19,6 +19,12 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
     @yield('style')
+
+    <script>
+          const metaTag = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    </script>
+
 </head>
 <body>
     <div id="app">
@@ -138,6 +144,13 @@
                 <a href="{{route("stocks.index")}}" class="nav-link text-white">
                   <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
                   stocks
+                </a>
+              </li>
+
+              <li>
+                <a href="{{route("order_details.index")}}" class="nav-link text-white">
+                  <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                  Order Details
                 </a>
               </li>
 

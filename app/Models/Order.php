@@ -17,5 +17,17 @@ class Order extends Model
 
     ];
 
+    // a order can have more than one order details 
+    public function order_details()
+    {
+        return $this->hasMany(OrderDetails::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    
 
 }

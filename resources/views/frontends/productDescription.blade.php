@@ -29,16 +29,17 @@
         <div class="input-group">
           <button class="btn btn-secondary" onclick="decreaseAmount()">-</button>
           <input type="hidden" value="{{$product->price}}" id="fixedPrice" class="form-control">
-          <input type="text" id="amount" class="form-control text-center" value="1">
+          <input type="text" id="amount" class="form-control text-center" value="1" >
           <button class="btn btn-secondary" onclick="increaseAmount()">+</button>
         </div>
         {{-- this is btn for checking out and adding to the cart  --}}
         <div class="btn-container w-100 d-flex justify-content-around">
           {{-- redirect to the checkout section --}}
-          <a href="{{route('frontends.checkout')}}" class="btn btn-primary mt-4 w-50">
+          <a href="{{route('frontends.checkout')}}" 
+          class="btn btn-primary mt-4 w-50 btn-buy-disabled">
               Buy Now
           </a>
-          <button class="btn mt-4 text-white ms-1 w-50 add-cart" data-product-id="{{$product->id}}" style="background: #fc6000;">Add To Cart</button>
+          <button class="btn mt-4 text-white ms-1 w-50 add-cart btn-disabled" data-product-id="{{$product->id}}" style="background: #fc6000;">Add To Cart</button>
         </div>
       </div>
     </div>
@@ -50,19 +51,54 @@
 
         let product = document.querySelector("#productPrice");
         let fixedPrice = parseFloat(document.querySelector("#fixedPrice").value);
+        let quantityAmount = document.querySelector('#amount');
+        // console.log(quantityAmount);
+        let stockQuantity = @json($product->stocks->quantity);
+        let btn = document.querySelector('.btn-disabled');
+        let btn_buy_disabled = document.querySelector(".btn-buy-disabled");
+        // console.log(btn)
+
+        // console.log(stockQuantity);
         // console.log(fixedPrice);
         const productPrice = product;
         let productData = {
         amount: parseFloat(productPrice.textContent)
         };
 
+        const disableButton=()=>{
+            btn.disabled = true;
+            btn_buy_disabled.removeAttribute('href');
+            btn_buy_disabled.style.opacity = "0.6";
+        }
+
+        if(stockQuantity == 0)
+        {
+            disableButton();
+        }
+
+        quantityAmount.onchange = (e)=>{
+            e.preventDefault();
+            // console.log('changed');
+
+            // let product.textContent = quantityAmount.value * fixedPrice;
+            if(stockQuantity < quantityAmount.value)
+            {
+                disableButton();
+            }else{
+            btn.disabled = false;
+            btn_buy_disabled.addAttribute('href');
+            btn_buy_disabled.style.opacity = "1";
+            }
+
+            
+        }
 
         // it is for increasing the amount
         function increaseAmount() {
             let quantityInput = document.querySelector("#amount");
             let currentQuantity = parseInt(quantityInput.value);
 
-            if (currentQuantity >= 1) 
+            if (currentQuantity >= 1 && currentQuantity < stockQuantity) 
             {
                 currentQuantity += 1;
                 // it will be fixed Price

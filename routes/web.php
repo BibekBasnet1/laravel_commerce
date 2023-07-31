@@ -89,6 +89,7 @@ Route::post('allwishlist/products',[App\Http\Controllers\WishlistController::cla
 // this is for the wish delete
 Route::post('wishlist-delete/',[App\Http\Controllers\WishlistController::class , 'destroy'])->name('wishlists.destroy');
 
+
 Route::get('/login', function () 
 {
     return View::name('auth.login', 'layouts.login-layout');
@@ -179,6 +180,11 @@ Route::post('/user/products/stocks/store',[App\Http\Controllers\StocksController
 Route::get('/user/products/stocks/edit/{id}',[App\Http\Controllers\StocksController::class , 'edit'])->name('stocks.edit');
 Route::post('/user/products/stocks/update/{id}',[App\Http\Controllers\StocksController::class , 'update'])->name('stocks.update');
 Route::post('/user/products/stocks/delete/{id}',[App\Http\Controllers\StocksController::class , 'destroy'])->name('stocks.destroy');
+
+// for the order details 
+Route::get('/user/products/orderDetails/',[App\Http\Controllers\OrderDetailsController::class , 'index'])->name('order_details.index');
+
+Route::post('/orderDetails/information',[App\Http\Controllers\OrderDetailsController::class , 'viewProduct'])->name('order_details.viewProduct');
 
 
 });

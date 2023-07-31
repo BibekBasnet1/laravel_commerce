@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\OrderShipped;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\OrderDetails;
 use App\Models\Product;
 use App\Models\Stock;
 use App\View\Components\OrderConfirmation;
@@ -76,24 +77,43 @@ class OrderController extends Controller
         // dd($orderDetails);        
         // join the table if the product_id is equal to the product id 
 
-
-        foreach ($orderDetails as $item) {
+        $sum = 0;
+        foreach ($orderDetails as $item) 
+        {
             $productName = $item['name'];
             $quantity = $item['quantity'];
 
-
+            // $sum+= $quantity;
             // if the stock name matches with the product name in the orders table with stocks
             $product = Product::with('stocks')->where('name', $productName)->first();
+
+            // if the quantity is less than the quantity we have on stock 
             if ($quantity < $product->stocks->quantity) {
             }
 
             if ($product) {
-                // foreach ($product->stocks as $stock) {
-                // Subtract the quantity from the stock record
+            
+                // reducing the stock quantity with the quantity
                 $product->stocks->quantity -= $quantity;
                 $product->stocks->save();
-                // }
+                
+                // for order details 
+                $orderDetails = new OrderDetails();
+                
+                // recently saved orderid
+                $orderDetails->order_id = $orderId;
+
+                // this is the product Id
+                $orderDetails->product_id = $product->id;
+
+                // this is the quantity 
+                $orderDetails->quantity = $quantity;
+
+                $orderDetails->price = $product->price * $orderDetails->quantity;
+                $orderDetails->save();
+
             }
+
         }
 
 
