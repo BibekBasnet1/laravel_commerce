@@ -112,6 +112,10 @@ class FrontendController extends Controller
         ->join('products', 'carts.product_id', '=', 'products.id')
         ->get();
         // dd($products->toArray());
+        if(!auth()->check())
+        {
+            return view('auth.login');
+        }
         $id = auth()->user()->id;
         
         $orders = Order::where('user_id',$id)->get();

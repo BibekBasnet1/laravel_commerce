@@ -34,10 +34,10 @@
         {{-- this is btn for checking out and adding to the cart  --}}
         <div class="btn-container w-100 d-flex justify-content-around">
           {{-- redirect to the checkout section --}}
-          <a href="{{route('frontends.checkout')}}" class="btn btn-primary mt-4 w-50">
+          <a href="{{route('frontends.checkout')}}" class="btn btn-primary mt-4 w-50 btn-buy-disabled">
               Buy Now
           </a>
-          <button class="btn mt-4 text-white ms-1 w-50 add-cart" data-product-id="{{$product->id}}" style="background: #fc6000;">Add To Cart</button>
+          <button class="btn mt-4 text-white ms-1 w-50 add-cart btn-disabled" data-product-id="{{$product->id}}" style="background: #fc6000;">Add To Cart</button>
         </div>
       </div>
     </div>
@@ -47,6 +47,12 @@
     <script>
         let product = document.querySelector("#productPrice");
         let fixedPrice = parseFloat(document.querySelector("#fixedPrice").value);
+        let quantityAmount = document.querySelector("#amount");
+        let stockQuantity = @json($product->stocks->quantity);
+        let btn = document.querySelector('.btn-disabled');
+        console.log(btn)
+        let btn_buy_disabled = document.querySelector('.btn-buy-disabled');
+        // let stockQuantity = @json_encode();
         // console.log(fixedPrice);
         const productPrice = product;
         let productData = {
