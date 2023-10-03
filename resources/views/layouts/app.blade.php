@@ -154,6 +154,20 @@
                 </a>
               </li>
 
+              <li>
+                <a href="{{route("order_details.product_sold_details")}}" class="nav-link text-white">
+                  <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                  Product Details
+                </a>
+              </li>
+
+              <li>
+                <a href="{{route("productImages.index")}}" class="nav-link text-white">
+                  <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                  Add Product Images
+                </a>
+              </li>
+
             </ul>
             <hr>
             <div class="dropdown">

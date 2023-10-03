@@ -83,6 +83,8 @@
     home page
 @endsection
 
+
+
 @section('home')
     <div class="container-fluid" style="">
         <div class="carousel-container d-flex">
@@ -165,8 +167,8 @@
                     @foreach ($slider as $item)
                         <div class="carousel-item {{ $loop->first ? ' active' : '' }}">
                             <a href="">
-                                
-                                {{-- if the image exist in the public folder itself show it  otherwise go to images folder and find it--}}
+
+                                {{-- if the image exist in the public folder itself show it  otherwise go to images folder and find it --}}
 
                                 @if (File::exists(public_path($item->image)))
                                     <img src="{{ asset($item->image) }}" class="d-block w-100 img-fluid carousel-image"
@@ -201,8 +203,54 @@
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
+
         </div>
         {{-- end of the slider --}}
+
+
+        {{-- this is for the new Arrival Products --}}
+        <p class="fs-3 m-5 mb-2 border-bottom " id="newArrival">New Arrival</p>
+
+
+        <div class="newArrival">
+            <!-- Slider main container -->
+            <div style="position: relative !important; " class="swiper-container swiper-container-free-mode">
+
+                <!-- Additional required wrapper -->
+                <div class="swiper-wrapper p-5 ">
+                    <!-- Slide -->
+                    @foreach ($featuredProducts as $item)
+                        <div class="swiper-slide border border-1 swiper-product ms-2"
+                            style="max-width: 300px;max-height:300px;" data-swiper-autoplay="1000">
+                            {{-- <div style="height:100%;width:100%;"> --}}
+                            <a href="{{ route('frontends.imageCheckout', ['id' => $item->id]) }}"
+                                class="text-decoration-none ">
+                                <img src="{{ asset($item->image) }}" style="object-fit:cover;" width="100%;"
+                                    height="100%">
+                                <p class="text-center text-black" style="height:20%">{{ $item->name }}</p>
+                                <p class="fs-5 text-center mb-2" style="color: #fc6000;">Price: {{ $item->price }}</p>
+                            </a>
+                            {{-- </div> --}}
+                        </div>
+                    @endforeach
+
+                </div>
+
+                <!-- If we need navigation buttons -->
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+
+                <!-- If we need scrollbar -->
+                <div class="swiper-scrollbar" style="mt-5"></div>
+
+            </div>
+
+
+
+        </div>
+
+        {{-- end of the new Arrival Products --}}
+
         <p class="fs-3 m-5 border-bottom " id="products">Products</p>
 
         <div class="products-container container-fluid ">
@@ -301,6 +349,8 @@
 
     </div>
 @endsection
+
+
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 @section('script')
     <script>

@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     @yield('style')
     <style>
         .card:hover {
@@ -27,6 +28,8 @@
             /* background: #ffffff69; */
             box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
         }
+
+   
     </style>
 </head>
 
@@ -53,11 +56,11 @@
 
 
                     <li class="nav-item m-2">
-                        <a href="#products" class="nav-link text-white">Products</a>
+                        {{-- <a href="#products" class="nav-link text-white">Products</a> --}}
                     </li>
 
                     <li class="nav-item m-2">
-                        <a href="#contacts" class="nav-link text-white">Contact</a>
+                        {{-- <a href="#contacts" class="nav-link text-white">Contact</a> --}}
                     </li>
 
                 </ul>
@@ -204,10 +207,15 @@
                 </div>
             </div>
         </div>
+
+
+
         {{-- end of the modal wishlist --}}
         <main class="d-flex justify-content-center m-1" style="width: 100%;">
             @yield('home')
         </main>
+
+
 
         <section class="featured-products ">
             @yield('featured')
@@ -304,7 +312,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
+     
         // Select the search input field
         let searchInput = document.querySelector('#searchInput');
         let allCart = document.querySelector(".allCart");

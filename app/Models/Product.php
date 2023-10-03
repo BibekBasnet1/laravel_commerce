@@ -9,7 +9,12 @@ use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
-    use HasFactory,softDeletes;
+    use HasFactory, softDeletes;
+
+    protected $casts = [
+        'colors' => 'array',
+        'attributes' => 'array',
+    ];
 
     protected $fillable = [
         'name',
@@ -17,6 +22,9 @@ class Product extends Model
         'user_id',
         'category_id',
         'image',
+        'attributes',
+        'colors',
+        'isVariant'
     ];
 
     public function user()
@@ -46,7 +54,13 @@ class Product extends Model
     {
         return $this->hasOne(Stock::class);
     }
-    
+
+    // has many variants
+    public function variants()
+    {
+        return $this->hasMany(Variant::class);
+    }
+
 
     public function orderDetail()
     {
@@ -56,19 +70,25 @@ class Product extends Model
     // logic for deleting the image 
     protected static function boot()
     {
+        
         parent::boot();
-
         // Listen for the "deleting" event
-        static::deleting(function ($product) {
+        static::deleting(function ($product)
+        {
             // Delete the associated image from storage if it exists
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
-            // Delete the associated image from storage
-            // Storage::disk('public')->delete($product->image);
+
         });
+
     }
 
+    public function images()
+    {
+        return $this->hasMany(ProductImages::class);
+    }
+
+
+
 }
-
-

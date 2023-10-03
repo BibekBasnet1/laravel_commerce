@@ -56,8 +56,8 @@ class PermisionController extends Controller
     public function edit(string $id)
     {
         // basically it will help to get the permission id first
-        // $permission = Permisson::where('id',$id)->first();
-        $permission = Permisson::with('roles')->get();
+        $permission = Permisson::with('roles')->where('id',$id)->first();
+        // $permission = Permisson::with('roles')->get();
         // it will help to return the view for editing files as well as for accessing the permisison
         // key and values
         // dd($permission);

@@ -21,13 +21,6 @@ use Illuminate\Support\Facades\Mail;
 
 
 // this is used for the user categories frontEndView
-// Route::view('/','frontends.show');
-
-// this is the view for the categories
-// Route::view('/categories/cart','frontends.addCart')->name('frontends.addCart');
-
-
-// Route::view('/categories', 'frontends.categories')->name('frontends.categories');
 
 Route::view('/sidebarCategories','frontends.sidebarCategories')->name("frontends.sidebarCategories");
 
@@ -97,9 +90,8 @@ Route::get('/login', function ()
 Auth::routes();
 
 // grouping for the admin preifx
-Route::group(['prefix' => 'admin','middleware' => 'auth'],function(){
-
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('frontends.show');
+Route::group(['prefix' => 'admin','middleware' => 'auth'],function()
+{
 
 // giving the route for the users where we pass the functioname in the controller part 
 Route::get('/user', [App\Http\Controllers\UserController::class, 'getUser'])->name('users.index')->middleware('auth');
@@ -182,8 +174,22 @@ Route::post('/user/products/stocks/delete/{id}',[App\Http\Controllers\StocksCont
 
 // for the order details 
 Route::get('/user/products/orderDetails/',[App\Http\Controllers\OrderDetailsController::class , 'index'])->name('order_details.index');
-
 Route::post('/orderDetails/information',[App\Http\Controllers\OrderDetailsController::class , 'viewProduct'])->name('order_details.viewProduct');
+
+
+// this is for the checking out how many products has been sold
+Route::get('/user/products/products_details',[App\Http\Controllers\OrderDetailsController::class , 'product_sold_details'])->name('order_details.product_sold_details');
+
+
+
+// for the product Images
+Route::get('/user/productImages',[App\Http\Controllers\ProductImagesController::class , 'index'])->name('productImages.index');
+Route::get('/user/createProductImage',[App\Http\Controllers\ProductImagesController::class , 'create'])->name('productImages.create');
+Route::post('/user/productImages/store',[App\Http\Controllers\ProductImagesController::class , 'store'])->name('productImages.store');
+
+// Route::get('/user/productImages',[App\Http\Controllers\ProductController::class , 'index'])->name('products.index');
+// Route::get('/user/productImages',[App\Http\Controllers\ProductController::class , 'index'])->name('products.index');
+// Route::get('/user/productImages',[App\Http\Controllers\ProductController::class , 'index'])->name('products.index');
 
 
 });

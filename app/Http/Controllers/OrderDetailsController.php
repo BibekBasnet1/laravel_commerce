@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderDetailsController extends Controller
 {
@@ -40,6 +41,21 @@ class OrderDetailsController extends Controller
 
     }
 
+
+    public function product_sold_details(Request $request)
+    {
+
+        $productInformation = OrderDetails::select('name','product_id',DB::raw('SUM(quantity) as total_quantity'))
+            ->join('products', 'products.id', '=', 'order_details.product_id')
+            ->groupBy('product_id')
+            ->get();
+
+        
+        // dd($productInformation->toArray());
+        return view('product_details.index',compact('productInformation'));
+        
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -47,7 +63,7 @@ class OrderDetailsController extends Controller
     {
         //
     }
-
+// 
     /**
      * Store a newly created resource in storage.
      */

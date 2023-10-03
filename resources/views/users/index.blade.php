@@ -45,7 +45,7 @@
                     $count = 0;
                 @endphp
                 @foreach ($users as $key => $user)
-                    <tr class="">
+                    <tr class="">  
                         <td>{{ ++$count }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
