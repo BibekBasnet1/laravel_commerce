@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendOrderConfirmationEmail;
 use App\Mail\OrderShipped;
 use App\Models\Cart;
 use App\Models\Order;
@@ -52,7 +53,7 @@ class OrderController extends Controller
                 // returning the order in the json format
                 return response()->json([
                     'success' => false,
-                    'message' => $productName ." out of stock " ,
+                    'message' => $productName . " out of stock ",
                 ]);
             }
         }
@@ -78,8 +79,7 @@ class OrderController extends Controller
         // join the table if the product_id is equal to the product id 
 
         $sum = 0;
-        foreach ($orderDetails as $item) 
-        {
+        foreach ($orderDetails as $item) {
             $productName = $item['name'];
             $quantity = $item['quantity'];
 
@@ -92,14 +92,14 @@ class OrderController extends Controller
             }
 
             if ($product) {
-            
+
                 // reducing the stock quantity with the quantity
                 $product->stocks->quantity -= $quantity;
                 $product->stocks->save();
-                
+
                 // for order details 
                 $orderDetails = new OrderDetails();
-                
+
                 // recently saved orderid
                 $orderDetails->order_id = $orderId;
 
@@ -111,9 +111,7 @@ class OrderController extends Controller
 
                 $orderDetails->price = $product->price * $orderDetails->quantity;
                 $orderDetails->save();
-
             }
-
         }
 
 
@@ -143,8 +141,8 @@ class OrderController extends Controller
             ->where("orders.id", $id)
             ->first();
 
-        // for sending the email to the user on order confirm 
-        $email = Mail::to('testreceiver@gmail.com')->send(new OrderShipped($userOrder));
+        // Dispatch the job to the queue, passing $userOrder as an argument
+        SendOrderConfirmationEmail::dispatch($userOrder);
 
         // this will return the view for the order checkout and $userorders details
         return view('frontends.orderCheckout', compact('userOrder'));

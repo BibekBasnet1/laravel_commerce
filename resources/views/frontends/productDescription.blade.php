@@ -185,6 +185,7 @@
 
                     <div class="attributes-container d-flex">
                         <div class="radio-toolbar">
+                            @if($product->attributes)
                             @foreach (json_decode($product->attributes) as $key => $attribute)
                                 <span class="fs-4">{{ $key }}</span>
                                 @php $groupUniqueId =  $key; @endphp
@@ -199,6 +200,7 @@
                                 </div>
                                 <br>
                             @endforeach
+                            @endif
                         </div>
                     </div>
 

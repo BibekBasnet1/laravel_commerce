@@ -196,8 +196,6 @@ class FrontendController extends Controller
 
         // takes out the current product with variants 
         $productVariants = Product::with('variants')->where('id',$id)->first();
-        // dd($productVariants->name);
-        // dd($productVariants->toArray());
 
         // it returns the view for the productVariants
         return view('frontends.productDescription', compact('product', 'productImages','productCategory','productVariants'));
