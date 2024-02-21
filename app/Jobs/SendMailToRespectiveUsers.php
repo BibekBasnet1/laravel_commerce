@@ -8,35 +8,24 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Mail\OrderShipped;
-use Illuminate\Support\Facades\Mail;
 
-class SendOrderConfirmationEmail implements ShouldQueue
+class SendMailToRespectiveUsers implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
      */
-    // use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    protected $userOrder;
-
-    public function __construct($userOrder)
+    public function __construct()
     {
-        $this->userOrder = $userOrder;
+        //
     }
 
     /**
      * Execute the job.
      */
-    public function handle()
+    public function handle(): void
     {
-        $userOrder = $this->userOrder; 
-
-        Mail::to('testreceiver@gmail.com')->send(new OrderShipped($userOrder));
+        //
     }
-
 }
-
-
