@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\SendOrderConfirmationEmail;
-use App\Mail\OrderShipped;
+use App\Jobs\SendMailToRespectiveUsers;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Product;
-use App\Models\Stock;
-use App\View\Components\OrderConfirmation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -142,7 +138,7 @@ class OrderController extends Controller
             ->first();
 
         // Dispatch the job to the queue, passing $userOrder as an argument
-        SendOrderConfirmationEmail::dispatch($userOrder);
+        SendMailToRespectiveUsers::dispatch($userOrder);
 
         // this will return the view for the order checkout and $userorders details
         return view('frontends.orderCheckout', compact('userOrder'));

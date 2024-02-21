@@ -229,10 +229,10 @@
                     {{-- product price --}}
                     <p class="fs-4 mt-4" id="productPrice" style="color: #fc6000">
                         Price <br>
-                        @if (isset($productVariants->variants))
-                            {
-                            <?php echo 'variants exist'; ?>
-                            }
+                        @if (isset($productVariants))
+                            {{$productVariants->price}}
+                        @else
+                            {{-- {{$productVariants->price}} --}}
                         @endif
                     </p>
 

@@ -64,7 +64,7 @@ class Product extends Model
 
     public function orderDetail()
     {
-        return $this->hasOne(OrderDetail::class);
+        return $this->hasOne(OrderDetails::class);
     }
 
     // logic for deleting the image 
