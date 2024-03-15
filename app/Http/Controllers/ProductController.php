@@ -84,20 +84,23 @@ class ProductController extends Controller
         // this data will hold the variant product information 
         $variants = [];
 
-        $containsVariantProductName = $validatedData['name'];
-        $containsVariantAttribute = $validatedData['attribute'];
-        $containsVariantColorValue = $validatedData['colorValue'] ?? "";
+        $containsVariantProductName = $validatedData['name'] ?? '';
+        $containsVariantAttribute = $validatedData['attribute'] ?? [];
+        $containsVariantColorValue = $validatedData['colorValue'] ?? [];
         // dd($containsVariantColorValue);
         // dd(json_encode($containsVariantColorValue));
-        $containsVariantImages = $validatedData['variantImage'];
-        $containsVariantPrice = $validatedData['variantPrice'];
-        $containsVariantStock = $validatedData['variantStock'];
-        $containsVariantNames = $validatedData['variantValue'];
-        $containsAttributeInput = $validatedData['attributesInput'];
+        $containsVariantImages = $validatedData['variantImage'] ?? [];
+        $containsVariantPrice = $validatedData['variantPrice'] ?? "";
+        $containsVariantStock = $validatedData['variantStock'] ?? '';
+        $containsVariantNames = $validatedData['variantValue'] ?? '';
+        $containsAttributeInput = $validatedData['attributesInput'] ?? '';
         // dd($containsAttributeInput);
         $colorsAssocArray = [];
-        foreach ($containsVariantColorValue as $index => $color) {
-            $colorsAssocArray[$index] = $color;
+
+        if(isset($containsVariantColorValue)){
+            foreach ($containsVariantColorValue as $index => $color) {
+                $colorsAssocArray[$index] = $color;
+            }
         }
 
         // Now, $colorsAssocArray is an associative array with key-value pairs
@@ -112,25 +115,26 @@ class ProductController extends Controller
             array_push($containsAttributeNamesOnly, $productName);
         }
         
-
-        // Loop through each variant
-        for ($i = 0; $i < count($containsVariantImages); $i++) {
-            // Get the current variant's name
-            $variantName = $containsVariantProductName . '-' . $containsVariantNames[$i];
-
-            // Check if the variant name is already a key in the $variants array
-            if (!isset($variants[$variantName])) {
-                // If not, create a new sub-array for the variant name
-
-                $variants[$variantName] = [];
+        if(isset($containsVariantImages)){
+            // Loop through each variant
+            for ($i = 0; $i < count($containsVariantImages); $i++) {
+                // Get the current variant's name
+                $variantName = $containsVariantProductName . '-' . $containsVariantNames[$i];
+    
+                // Check if the variant name is already a key in the $variants array
+                if (!isset($variants[$variantName])) {
+                    // If not, create a new sub-array for the variant name
+    
+                    $variants[$variantName] = [];
+                }
+    
+                // Add the variant information to the sub-array
+                $variants[$variantName] = [
+                    'variantImage' => $containsVariantImages[$i],
+                    'price' => $containsVariantPrice[$i],
+                    'stock' => $containsVariantStock[$i]
+                ];
             }
-
-            // Add the variant information to the sub-array
-            $variants[$variantName] = [
-                'variantImage' => $containsVariantImages[$i],
-                'price' => $containsVariantPrice[$i],
-                'stock' => $containsVariantStock[$i]
-            ];
         }
         // dd($variants);
 

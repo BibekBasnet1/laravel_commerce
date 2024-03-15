@@ -274,7 +274,7 @@
 
                                 <div class="card-body bg-white w-100" style="height: 50%;">
                                     <p class="m-0" style="color: #fc6000;font-size:1rem;">{{ $product->name }}</p>
-                                    <p class="m-0 text-black">{{ $product->category->name }}</p>
+                                    <p class="m-0 text-black">{{ isset($product->category->name) }}</p>
                                     <p class="fs-5" style="color: #fc6000;">Price : {{ $product->price }}</p>
 
                                     {{-- this container holds the icons of the cart whislist and the cart --}}

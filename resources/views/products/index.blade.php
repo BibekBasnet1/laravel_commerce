@@ -34,14 +34,15 @@
         @php
             ++$count;
         @endphp
-        <tr >
+
+        <tr>
             <td>{{$count}}</td>
             <td>{{$product->name}}</td>
             <td>{{$product->price}}</td>
-            <td>{{$product->category->name}}</td>
+            <td>{{isset($product->category->name)}}</td>
             <td>{{$product->user->name ?? 'N/A'}}</td>
             <td>
-                {{-- asd --}}
+           
                 {{-- <img src="{{asset('images/'.$product->image)}}" style="width: 40%;" alt=""> --}}
                 @if (File::exists(public_path($product->image)))
                     <img style="width:20%;height:20%;" src="{{ asset($product->image) }}" alt="">
@@ -49,20 +50,22 @@
                     <img style="width:20%;height:20%;" src="{{ asset('images/' .$product->image) }}" alt="">
                 @endif
 
-                {{-- {{$product->image ?? 'No Image'}} --}}
             </td>
+
             <td class="d-flex">
-                {{-- for deleteting the product based on the id of the product--}}
+           
                 <a href="{{route('products.edit',['id'=>$product->id])}}" class="btn btn-success ">Edit</a>
 
-                {{-- to delete the product based on the id provided --}}
-                <form action="{{route('products.destroy',['id'=>$product->id])}}" method="post">
+                    <form action="{{route('products.destroy',['id'=>$product->id])}}" method="post">
                     @csrf
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </td>
+
         </tr>
+
         @endforeach
+
     </tbody>
 </table>
 </div>

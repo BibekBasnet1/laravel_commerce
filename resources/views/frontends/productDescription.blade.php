@@ -582,11 +582,10 @@
                                     .then((data) => {
                                         toastr.warning("data delted succesfully!");
 
-                                        // removes the div element when being delete button clicked
                                         divElement.remove();
+
                                         const total = 0;
-                                        // if the total price is 0 make it 0
-                                        console.log(items);
+                                        
                                         if (totalPrice(items) === 0) {
                                             totalElement.textContent = 'Total Price ' +
                                                 total;
@@ -597,13 +596,12 @@
                                         }
 
                                     })
-
-                                    // to find if something has gone wrong 
+ 
                                     .catch(error => console.log(error))
 
-                            })
+                                })
 
-                        });
+                            });
 
                         const totalElement = document.createElement('p');
                         totalElement.classList.add('total-price', 'text-end', 'fs-5');
@@ -622,6 +620,7 @@
 
 
         const totalPrice = (items) => {
+            console.log(items);
             let total = 0;
             for (let i = 0; i < items.cartItems.length; i++) {
                 total += parseFloat(items.cartItems[i].price);

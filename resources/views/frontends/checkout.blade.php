@@ -19,7 +19,7 @@
 
 
         <form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST" class="esewa-form"
-            {{-- style="display:none;" --}}>
+            style="display:none;">
             <input type="text" id="amount" name="amount" value="0" required>
             <input type="text" id="tax_amount" name="tax_amount" value ="0" required>
             <input type="text" id="total_amount" name="total_amount" value="0" required>
@@ -80,7 +80,7 @@
                 </div>
             </div>
 
-            <div class="row mt-4 p-4 ">
+            {{-- <div class="row mt-4 p-4 ">
                 <div class="form-check col">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
                     <label class="form-check-label" for="flexRadioDefault1">
@@ -96,7 +96,7 @@
                     </label>
                 </div>
 
-            </div>
+            </div> --}}
             <div class="row">
                 <a href="" class="btn btn-primary mt-4 btn-submit w-100">
                     Cash
@@ -171,7 +171,7 @@
                         // url = `checkout/order/items/` + data.orderId;
                         // window.location.href = url
                         orderId= data.orderId;
-                        toastr.success("Order Placed");
+                        // toastr.success("Order Placed");
                     } else {
                         toastr.info(data.message);
                     }
@@ -289,8 +289,11 @@
             },200)
 
             setTimeout(()=>{
+                toastr.info("Redirecting to success page...");
                 submitEsewa.submit();
             },300)
+       
         });
+
     </script>
 @endsection
