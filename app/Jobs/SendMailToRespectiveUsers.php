@@ -23,6 +23,7 @@ class SendMailToRespectiveUsers implements ShouldQueue
 
     public function handle()
     {
+        
         Mail::to($this->userOrder->email)->send(new OrderShipped($this->userOrder));
     }
 }

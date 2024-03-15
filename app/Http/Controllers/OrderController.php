@@ -128,6 +128,7 @@ class OrderController extends Controller
 
     public function  orderCheckout(Request $request, $id)
     {
+        
 
         // inner join the orders table with the users table if the user-id matches 
         // in the users table with orders
