@@ -39,7 +39,7 @@
             <td>{{$count}}</td>
             <td>{{$product->name}}</td>
             <td>{{$product->price}}</td>
-            <td>{{isset($product->category->name)}}</td>
+            <td>isset($product->category->name)</td>
             <td>{{$product->user->name ?? 'N/A'}}</td>
             <td>
            

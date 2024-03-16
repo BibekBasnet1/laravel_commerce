@@ -45,25 +45,31 @@ class User extends Authenticatable
     ];
 
     // for the user 
-    public function products(){
+    public function products()
+    {
         return $this->hasMany(Product::class);
     }
 
     // establishing the relationship with the user_roles
     public function roles()
     {
-        return $this->belongsToMany(Roles::class,'user_roles','user','role');
-    }    
+        return $this->belongsToMany(Roles::class, 'user_roles', 'user', 'role');
+    }
 
     public function wishlists()
     {
         return $this->hasMany(Wishlist::class);
     }
 
-
     // user has many orders
     public function orders()
     {
         return $this->hasMany(Order::class);
     }
+
+    public function permisssions(){
+        return $this->hasMany(Permisson::class);
+    }
+
+    
 }

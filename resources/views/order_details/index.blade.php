@@ -53,7 +53,7 @@
                     @endphp
                     <tr>
                         <td>{{ $count }}</td>
-                        <td>{{ $order->user->name }}</td>
+                        <td>{{ isset($order->user) ?? $order->user->name  }}</td>
                         <td>{{ $order->id }}</td>
 
                         {{-- adding the sum of price  --}}

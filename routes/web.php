@@ -90,7 +90,7 @@ Route::get('/login', function ()
 Auth::routes();
 
 // grouping for the admin preifx
-Route::group(['prefix' => 'admin','middleware' => 'auth'],function()
+Route::group(['prefix' => 'admin','middleware' => 'custom.auth'],function()
 {
 
 // giving the route for the users where we pass the functioname in the controller part 

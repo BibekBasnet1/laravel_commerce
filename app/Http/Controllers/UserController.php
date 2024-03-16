@@ -15,7 +15,7 @@ class UserController extends Controller
     public function getUser()
     {
         // to get the user 
-        $users = User::with('products')->get();
+        $users = User::with('products','roles')->get();
         // dd($users);
         // to implement logic and return the view where we have grabbed all the user from the database
         return view('users.index',compact('users'));
